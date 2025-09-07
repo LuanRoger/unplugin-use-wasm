@@ -1,4 +1,9 @@
-import { Plugin } from "rollup";
+import { createHash } from "node:crypto";
+import { readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
+import asc from "assemblyscript/asc";
+import { remove } from "fs-extra";
+import type { Plugin } from "rollup";
 import {
   BINDINGS_DEFAULT_WASM_URL_REGEX,
   D_TS_EXTENSION,
@@ -9,11 +14,6 @@ import {
   WASM_EXTENSION,
   WASM_TEXT_EXTENSION,
 } from "./constants";
-import { createHash } from "node:crypto";
-import { readFile, writeFile } from "node:fs/promises";
-import path from "node:path";
-import asc from "assemblyscript/asc";
-import { remove } from "fs-extra";
 import { StandaloneEnvironment } from "./utils";
 
 interface AssemblyScriptOptions {
@@ -107,23 +107,23 @@ export function useWasm(options: AssemblyScriptOptions): Plugin {
       await standaloneEnvironment.setup();
       const outFilePath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        wasmFileName
+        wasmFileName,
       );
       const textFilePath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        wasmTextFileName
+        wasmTextFileName,
       );
       const jsBindingsPath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        jsBindingsFileName
+        jsBindingsFileName,
       );
       const dTsPath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        dTsFileName
+        dTsFileName,
       );
       const sourceMapPath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        sourceMapFileName
+        sourceMapFileName,
       );
 
       await writeFile(tempTsFilePath, cleanCode);
@@ -157,7 +157,7 @@ export function useWasm(options: AssemblyScriptOptions): Plugin {
       } catch (error) {
         if (error instanceof Error) {
           throw new Error(
-            `AssemblyScript compilation failed: ${error.message}`
+            `AssemblyScript compilation failed: ${error.message}`,
           );
         }
       }
@@ -205,7 +205,7 @@ export function useWasm(options: AssemblyScriptOptions): Plugin {
 
       const resolvedBindings = generatedBindings.replace(
         BINDINGS_DEFAULT_WASM_URL_REGEX,
-        `new URL(import.meta.ROLLUP_FILE_URL_${referenceId})`
+        `new URL(import.meta.ROLLUP_FILE_URL_${referenceId})`,
       );
       return {
         code: resolvedBindings,

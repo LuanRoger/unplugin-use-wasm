@@ -13,7 +13,7 @@ export class StandaloneEnvironment {
     this.standaloneOutputPath = path.join(this.standalonePath, "dist");
     this.standaloneOutputEntryPoint = path.join(
       this.standaloneOutputPath,
-      "index.mjs"
+      "index.mjs",
     );
   }
 
