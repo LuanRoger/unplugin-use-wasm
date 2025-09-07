@@ -1,19 +1,31 @@
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
+    "target": "esnext",
+    "useDefineForClassFields": true,
+    "module": "esnext",
+    "lib": ["ESNext"],
+    "skipLibCheck": true,
     "esModuleInterop": true,
-    "lib": ["es6"],
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
     "noEmit": true,
-    "noEmitOnError": false,
+    "resolveJsonModule": true,
+    "paths": {
+      "@/*": ["./src/*"],
+    },
+
+    /* Linting */
+    "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "pretty": true,
-    "sourceMap": true,
-    "strict": true,
-    "target": "esnext"
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
   },
-  "include": ["./src/**/*.ts"],
-  "exclude": ["dist", "node_modules", "test/types"]
+  "include": ["./src/**/*", "./tsdown.config.ts"],
+  "exclude": ["node_modules", "dist"]
 }
