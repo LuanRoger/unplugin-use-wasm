@@ -1,0 +1,48 @@
+{
+  "name": "@rog/plugin-use-wasm",
+  "version": "0.0.1",
+  "description": "Support to \"use wasm\" directive to compile to WebAssembly",
+  "license": "MIT",
+  "main": "index.js",
+  "repository": "https://github.com/LuanRoger/plugin-use-wasm",
+  "homepage": "https://github.com/LuanRoger/plugin-use-wasm",
+  "bugs": "https://github.com/LuanRoger/plugin-use-wasm/issues",
+  "keywords": [
+    "rollup",
+    "plugin",
+    "webassembly",
+    "wasm",
+    "wast",
+    "emscripten",
+    "assemblyscript",
+    "typescript",
+    "directive"
+  ],
+  "author": "Luan Roger <luan.roger.2003@gmail.com> (https://github.com/LuanRoger)",
+  "scripts": {
+    "build": "rollup -c",
+    "check": "biome check",
+    "check:write": "biome check --write"
+  },
+  "dependencies": {
+    "assemblyscript": "^0.28.6",
+    "fs-extra": "^11.3.1"
+  },
+  "peerDependencies": {
+    "rollup": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "rollup": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.2.3",
+    "@rollup/plugin-typescript": "^12.1.4",
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^24.3.1",
+    "rollup": "^4.50.1",
+    "typescript": "^5.9.2"
+  },
+  "packageManager": "pnpm@10.15.0"
+}
