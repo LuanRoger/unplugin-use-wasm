@@ -22,6 +22,13 @@
     "directive"
   ],
   "author": "Luan Roger <luan.roger.2003@gmail.com> (https://github.com/LuanRoger)",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "exports": {
+    "types": "./dist/index.d.mts",
+    "import": "./dist/index.mjs",
+    "default": "./dist/index.cjs"
+  },
   "scripts": {
     "dev": "rolldown -c rolldown.config.ts -w",
     "build": "tsdown --config tsdown.config.ts",
