@@ -1,38 +1,60 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import { add } from './lib/add'
-import './App.css'
+import "./styles/global.css";
+import { add } from "./lib/add";
+import { useState } from "react";
 
 function App() {
-  const [count, setCount] = useState(0)
-  const result = add(2, 3)
-  console.log('2 + 3 =', result)
+  const inputClass = "border border-gray-300 rounded px-4 py-2";
+
+  const [result, setResult] = useState<number | null>(null);
+  const [input1, setInput1] = useState<string>("");
+  const [input2, setInput2] = useState<string>("");
+
+  function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
+
+    const num1 = parseInt(input1);
+    const num2 = parseInt(input2);
+
+    if (!isNaN(num1) && !isNaN(num2)) {
+      const sum = add(num1, num2);
+      setResult(sum);
+    }
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 gap-4">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-4 items-center justify-center"
+      >
+        <div className="flex gap-4 items-center justify-center">
+          <input
+            type="text"
+            className={inputClass}
+            placeholder="Type an number..."
+            onChange={(e) => setInput1(e.target.value)}
+          />
+          <span className="font-bold text-lg">+</span>
+          <input
+            type="text"
+            className={inputClass}
+            placeholder="Type an number..."
+            onChange={(e) => setInput2(e.target.value)}
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="bg-blue-500 text-white rounded px-4 py-2"
+        >
+          Add
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
+      </form>
+      <p className="text-xl font-bold">
+        {result !== null ? result : "No result"}
       </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
