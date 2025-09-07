@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import path from "node:path";
 import asc from "assemblyscript/asc";
 import { remove } from "fs-extra";
@@ -61,10 +61,9 @@ function getCompilerFlags(options: AssemblyScriptOptions): string[] {
   return flags;
 }
 
-export function useWasm(options: AssemblyScriptOptions): Plugin {
+export function wasmDirective(options?: AssemblyScriptOptions): Plugin {
   return {
     name: "use-wasm",
-
     async load(id: string) {
       const isTsFile = id.endsWith(TS_EXTENSION);
       if (!isTsFile) return null;
@@ -88,7 +87,6 @@ export function useWasm(options: AssemblyScriptOptions): Plugin {
         return null;
       }
 
-      const cleanCode = code.replace(WASM_DIRECTIVE_REGEX, "");
       const idUniqueHash = createHash("sha1")
         .update(id)
         .digest("hex")
@@ -107,29 +105,27 @@ export function useWasm(options: AssemblyScriptOptions): Plugin {
       await standaloneEnvironment.setup();
       const outFilePath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        wasmFileName,
+        wasmFileName
       );
       const textFilePath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        wasmTextFileName,
+        wasmTextFileName
       );
       const jsBindingsPath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        jsBindingsFileName,
+        jsBindingsFileName
       );
       const dTsPath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        dTsFileName,
+        dTsFileName
       );
       const sourceMapPath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        sourceMapFileName,
+        sourceMapFileName
       );
 
-      await writeFile(tempTsFilePath, cleanCode);
-
       const compilerOptions = [
-        tempTsFilePath,
+        id,
         "--outFile",
         outFilePath,
         "--textFile",
@@ -142,7 +138,7 @@ export function useWasm(options: AssemblyScriptOptions): Plugin {
         "--noAssert",
         "--converge",
         "--optimize",
-        ...getCompilerFlags(options),
+        ...(options !== undefined ? getCompilerFlags(options) : []),
       ];
 
       try {
@@ -157,7 +153,7 @@ export function useWasm(options: AssemblyScriptOptions): Plugin {
       } catch (error) {
         if (error instanceof Error) {
           throw new Error(
-            `AssemblyScript compilation failed: ${error.message}`,
+            `AssemblyScript compilation failed: ${error.message}`
           );
         }
       }
@@ -205,7 +201,7 @@ export function useWasm(options: AssemblyScriptOptions): Plugin {
 
       const resolvedBindings = generatedBindings.replace(
         BINDINGS_DEFAULT_WASM_URL_REGEX,
-        `new URL(import.meta.ROLLUP_FILE_URL_${referenceId})`,
+        `new URL(import.meta.ROLLUP_FILE_URL_${referenceId})`
       );
       return {
         code: resolvedBindings,
