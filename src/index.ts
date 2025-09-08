@@ -3,7 +3,12 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import asc from "assemblyscript/asc";
 import { remove } from "fs-extra";
-import type { Plugin } from "rollup";
+import type { Plugin as RollupPlugin } from "rollup";
+
+// Allow Vite-specific enforce property while remaining Rollup-compatible
+interface WasmPlugin extends RollupPlugin {
+  enforce?: "pre" | "post";
+}
 import {
   BINDINGS_DEFAULT_WASM_URL_REGEX,
   D_TS_EXTENSION,
@@ -61,9 +66,10 @@ function getCompilerFlags(options: AssemblyScriptOptions): string[] {
   return flags;
 }
 
-export function wasmDirective(options?: AssemblyScriptOptions): Plugin {
+export function wasmDirective(options?: AssemblyScriptOptions): WasmPlugin {
   return {
     name: "use-wasm",
+    enforce: "pre",
     async load(id: string) {
       const isTsFile = id.endsWith(TS_EXTENSION);
       if (!isTsFile) return null;
@@ -173,40 +179,67 @@ export function wasmDirective(options?: AssemblyScriptOptions): Plugin {
         remove(tempTsFilePath),
       ]);
 
-      const wasmDistPath = path.join("wasm", wasmFileName);
-      const wasmTextDistPath = path.join("wasm", wasmTextFileName);
-      const dTsDistPath = path.join("wasm", dTsFileName);
+      // Detect if we're in Vite dev mode (HMR context)
+      const isViteDev =
+        typeof this.meta?.watchMode !== "undefined" && this.meta.watchMode;
 
-      const referenceId = this.emitFile({
-        type: "asset",
-        fileName: wasmDistPath,
-        source: wasmBinaryContent,
-      });
-      this.emitFile({
-        type: "asset",
-        fileName: wasmTextDistPath,
-        source: wasmTextContent,
-      });
-      this.emitFile({
-        type: "asset",
-        fileName: dTsDistPath,
-        source: dTsContent,
-      });
+      if (isViteDev) {
+        // In Vite dev mode, embed WASM as base64 data URL to avoid emitFile issues
+        const wasmBase64 = wasmBinaryContent.toString("base64");
+        const wasmDataUrl = `data:application/wasm;base64,${wasmBase64}`;
 
-      try {
-        await standaloneEnvironment.clean();
-      } catch {
-        this.warn("Not possible to clean standalone environment");
+        const devModeBindings = generatedBindings.replace(
+          BINDINGS_DEFAULT_WASM_URL_REGEX,
+          `"${wasmDataUrl}"`
+        );
+
+        try {
+          await standaloneEnvironment.clean();
+        } catch {
+          this.warn("Not possible to clean standalone environment");
+        }
+
+        return {
+          code: devModeBindings,
+          map: sourceMapContent,
+        };
+      } else {
+        // Production mode - use emitFile
+        const wasmDistPath = path.join("wasm", wasmFileName);
+        const wasmTextDistPath = path.join("wasm", wasmTextFileName);
+        const dTsDistPath = path.join("wasm", dTsFileName);
+
+        const referenceId = this.emitFile({
+          type: "asset",
+          fileName: wasmDistPath,
+          source: wasmBinaryContent,
+        });
+        this.emitFile({
+          type: "asset",
+          fileName: wasmTextDistPath,
+          source: wasmTextContent,
+        });
+        this.emitFile({
+          type: "asset",
+          fileName: dTsDistPath,
+          source: dTsContent,
+        });
+
+        try {
+          await standaloneEnvironment.clean();
+        } catch {
+          this.warn("Not possible to clean standalone environment");
+        }
+
+        const resolvedBindings = generatedBindings.replace(
+          BINDINGS_DEFAULT_WASM_URL_REGEX,
+          `new URL(import.meta.ROLLUP_FILE_URL_${referenceId})`
+        );
+        return {
+          code: resolvedBindings,
+          map: sourceMapContent,
+        };
       }
-
-      const resolvedBindings = generatedBindings.replace(
-        BINDINGS_DEFAULT_WASM_URL_REGEX,
-        `new URL(import.meta.ROLLUP_FILE_URL_${referenceId})`
-      );
-      return {
-        code: resolvedBindings,
-        map: sourceMapContent,
-      };
     },
   };
 }
