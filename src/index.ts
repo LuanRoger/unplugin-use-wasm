@@ -3,12 +3,8 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import asc from "assemblyscript/asc";
 import { remove } from "fs-extra";
-import type { Plugin as RollupPlugin } from "rollup";
+import type { Plugin } from "vite";
 
-// Allow Vite-specific enforce property while remaining Rollup-compatible
-interface WasmPlugin extends RollupPlugin {
-  enforce?: "pre" | "post";
-}
 import {
   BINDINGS_DEFAULT_WASM_URL_REGEX,
   D_TS_EXTENSION,
@@ -66,7 +62,7 @@ function getCompilerFlags(options: AssemblyScriptOptions): string[] {
   return flags;
 }
 
-export function wasmDirective(options?: AssemblyScriptOptions): WasmPlugin {
+export function wasmDirective(options?: AssemblyScriptOptions): Plugin {
   return {
     name: "use-wasm",
     enforce: "pre",

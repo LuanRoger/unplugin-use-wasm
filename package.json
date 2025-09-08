@@ -1,5 +1,5 @@
 {
-  "name": "@rog/plugin-use-wasm",
+  "name": "@rog/vite-plugin-use-wasm",
   "version": "0.0.1",
   "description": "Support to \"use wasm\" directive to compile to WebAssembly",
   "license": "MIT",
@@ -13,6 +13,7 @@
   "keywords": [
     "rollup",
     "plugin",
+    "vite-plugin",
     "webassembly",
     "wasm",
     "wast",
@@ -37,21 +38,13 @@
   },
   "dependencies": {
     "assemblyscript": "^0.28.6",
-    "fs-extra": "^11.3.1"
-  },
-  "peerDependencies": {
-    "rollup": "^4.0.0"
-  },
-  "peerDependenciesMeta": {
-    "rollup": {
-      "optional": true
-    }
+    "vite": "^7.1.5"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.3",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^24.3.1",
-    "rollup": "^4.50.1",
+    "fs-extra": "^11.3.1",
     "tsdown": "^0.14.2",
     "typescript": "^5.9.2"
   },
