@@ -1,6 +1,6 @@
 import "./styles/global.css";
-import { add } from "./lib/add";
 import { useState } from "react";
+import { add } from "./lib/add";
 
 function App() {
   const inputClass = "border border-gray-300 rounded px-4 py-2";
