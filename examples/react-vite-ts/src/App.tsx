@@ -1,58 +1,99 @@
-import "./styles/global.css";
 import { useState } from "react";
-import { add } from "./lib/add";
+import { fibWasm } from "./lib/fib-wasm";
+import { fibJs } from "./lib/fib-js";
 
 function App() {
-  const inputClass = "border border-gray-300 rounded px-4 py-2";
+  const [wasmResult, setWasmResult] = useState<number | null>(null);
+  const [wasmInputValue, setWasmInputValue] = useState<string>("");
 
-  const [result, setResult] = useState<number | null>(null);
-  const [input1, setInput1] = useState<string>("");
-  const [input2, setInput2] = useState<string>("");
+  const [jsResult, setJsResult] = useState<number | null>(null);
+  const [jsInputValue, setJsInputValue] = useState<string>("");
 
-  function handleSubmit(event: React.FormEvent) {
-    event.preventDefault();
+  const [jsTime, setJsTime] = useState<number | null>(null);
+  const [wasmTime, setWasmTime] = useState<number | null>(null);
 
-    const num1 = parseInt(input1);
-    const num2 = parseInt(input2);
+  function handleWasmSubmit(e: React.FormEvent) {
+    e.preventDefault();
 
-    if (!isNaN(num1) && !isNaN(num2)) {
-      const sum = add(num1, num2);
-      setResult(sum);
-    }
+    const start = performance.now();
+
+    const number = parseInt(wasmInputValue, 10);
+    const result = fibWasm(number);
+
+    const end = performance.now();
+    setWasmTime(end - start);
+    setWasmResult(result);
+  }
+
+  function handleJsSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    const start = performance.now();
+
+    const number = parseInt(jsInputValue, 10);
+    const result = fibJs(number);
+
+    const end = performance.now();
+    setJsTime(end - start);
+    setJsResult(result);
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 gap-4">
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col gap-4 items-center justify-center"
-      >
-        <div className="flex gap-4 items-center justify-center">
+    <div className="flex w-full h-screen items-center justify-center gap-4">
+      <div className="flex flex-col gap-4 p-4 border border-purple-500 rounded-xl">
+        <h2>Fibonacci WASM</h2>
+        <form onSubmit={handleWasmSubmit} className="flex flex-col gap-2">
           <input
-            type="text"
-            className={inputClass}
-            placeholder="Type an number..."
-            onChange={(e) => setInput1(e.target.value)}
+            type="number"
+            placeholder="Enter a number"
+            className="border border-gray-300 rounded px-2 py-1"
+            onChange={(e) => setWasmInputValue(e.target.value)}
           />
-          <span className="font-bold text-lg">+</span>
-          <input
-            type="text"
-            className={inputClass}
-            placeholder="Type an number..."
-            onChange={(e) => setInput2(e.target.value)}
-          />
+          <button
+            type="submit"
+            className="bg-purple-500 text-white rounded px-2 py-1"
+          >
+            Calculate
+          </button>
+        </form>
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-2 justify-between">
+            <h3 className="font-bold">Result:</h3>
+            <p>{wasmResult !== null ? wasmResult : "No result"}</p>
+          </div>
+          <div className="flex gap-2 justify-between">
+            <h3 className="font-bold">Time:</h3>
+            <p>{wasmTime !== null ? `${wasmTime} ms` : "No result"}</p>
+          </div>
         </div>
-
-        <button
-          type="submit"
-          className="bg-blue-500 text-white rounded px-4 py-2"
-        >
-          Add
-        </button>
-      </form>
-      <p className="text-xl font-bold">
-        {result !== null ? result : "No result"}
-      </p>
+      </div>
+      <div className="flex flex-col gap-4 p-4 border border-yellow-500 rounded-xl">
+        <h2>Fibonacci JS</h2>
+        <form onSubmit={handleJsSubmit} className="flex flex-col gap-2">
+          <input
+            type="number"
+            placeholder="Enter a number"
+            className="border border-gray-300 rounded px-2 py-1"
+            onChange={(e) => setJsInputValue(e.target.value)}
+          />
+          <button
+            type="submit"
+            className="bg-yellow-500 text-white rounded px-2 py-1"
+          >
+            Calculate
+          </button>
+        </form>
+        <div>
+          <div className="flex gap-2 justify-between">
+            <h3 className="font-bold">Result:</h3>
+            <p>{jsResult !== null ? jsResult : "No result"}</p>
+          </div>
+          <div className="flex gap-2 justify-between">
+            <h3 className="font-bold">Time:</h3>
+            <p>{jsTime !== null ? `${jsTime} ms` : "No result"}</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
