@@ -6,4 +6,5 @@ export default defineConfig({
   tsconfig: "tsconfig.json",
   format: "esm",
   sourcemap: true,
+  external: ["vite"],
 });
