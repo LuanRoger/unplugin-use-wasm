@@ -21,6 +21,7 @@
     "@types/react-dom": "^19.1.7",
     "@vitejs/plugin-react": "^5.0.0",
     "globals": "^16.3.0",
-    "typescript": "~5.8.3"
+    "typescript": "~5.8.3",
+    "vite-plugin-inspect": "^11.3.3"
   }
 }
