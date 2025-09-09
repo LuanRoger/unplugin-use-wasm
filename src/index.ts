@@ -66,7 +66,7 @@ export function wasmDirective(options?: AssemblyScriptOptions): Plugin {
   return {
     name: "use-wasm",
     enforce: "pre",
-    async load(id: string) {
+    async load(id) {
       const isTsFile = id.endsWith(TS_EXTENSION);
       if (!isTsFile) return null;
 
@@ -83,7 +83,7 @@ export function wasmDirective(options?: AssemblyScriptOptions): Plugin {
       }
     },
 
-    async transform(code: string, id: string) {
+    async transform(code, id) {
       const hasWasmDirective = WASM_DIRECTIVE_REGEX.test(code.trim());
       if (!hasWasmDirective) {
         return null;
