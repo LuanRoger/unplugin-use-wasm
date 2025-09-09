@@ -26,6 +26,6 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["./src/**/*", "./tsdown.config.ts"],
+  "include": ["./packages/**/*"],
   "exclude": ["node_modules", "dist"]
 }

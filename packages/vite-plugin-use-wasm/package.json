@@ -1,0 +1,50 @@
+{
+  "name": "@rog/vite-plugin-use-wasm",
+  "version": "0.0.1",
+  "description": "Support to \"use wasm\" directive to compile to WebAssembly",
+  "license": "MIT",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LuanRoger/plugin-use-wasm.git"
+  },
+  "homepage": "https://github.com/LuanRoger/plugin-use-wasm",
+  "bugs": "https://github.com/LuanRoger/plugin-use-wasm/issues",
+  "keywords": [
+    "rollup",
+    "plugin",
+    "vite-plugin",
+    "webassembly",
+    "wasm",
+    "wast",
+    "emscripten",
+    "assemblyscript",
+    "typescript",
+    "directive"
+  ],
+  "author": "Luan Roger <luan.roger.2003@gmail.com> (https://github.com/LuanRoger)",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "exports": {
+    "types": "./dist/index.d.mts",
+    "import": "./dist/index.mjs",
+    "default": "./dist/index.cjs"
+  },
+  "scripts": {
+    "dev": "rolldown -c rolldown.config.ts -w",
+    "build": "tsdown --config tsdown.config.ts"
+  },
+  "peerDependencies": {
+    "vite": ">=7.0.0"
+  },
+  "dependencies": {
+    "assemblyscript": "^0.28.6"
+  },
+  "devDependencies": {
+    "vite": "^7.1.5",
+    "@types/fs-extra": "^11.0.4",
+    "fs-extra": "^11.3.1",
+    "tsdown": "^0.15.0"
+  },
+  "packageManager": "pnpm@10.15.0"
+}
