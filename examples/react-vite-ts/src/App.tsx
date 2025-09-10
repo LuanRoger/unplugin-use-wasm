@@ -39,7 +39,7 @@ function App() {
   }
 
   return (
-    <div className="flex w-full h-screen items-center justify-center gap-4">
+    <main className="flex w-full h-screen items-center justify-center gap-4 bg-gray-800 text-white">
       <div className="flex flex-col gap-4 p-4 border border-purple-500 rounded-xl">
         <h2>Fibonacci WASM</h2>
         <form onSubmit={handleWasmSubmit} className="flex flex-col gap-2">
@@ -94,7 +94,7 @@ function App() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
 
