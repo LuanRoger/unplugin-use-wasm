@@ -2,7 +2,6 @@
   "version": "0.0.1",
   "private": true,
   "license": "MIT",
-  "main": "index.js",
   "author": "Luan Roger <luan.roger.2003@gmail.com> (https://github.com/LuanRoger)",
   "scripts": {
     "check": "biome check",

@@ -1,9 +1,8 @@
 {
   "name": "@rog/vite-plugin-use-wasm",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "Support to \"use wasm\" directive to compile to WebAssembly",
   "license": "MIT",
-  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/LuanRoger/plugin-use-wasm.git"
@@ -30,9 +29,14 @@
     "import": "./dist/index.mjs",
     "default": "./dist/index.cjs"
   },
+  "files": [
+    "dist",
+    "LICENSE"
+  ],
   "scripts": {
-    "dev": "rolldown -c rolldown.config.ts -w",
-    "build": "tsdown --config tsdown.config.ts"
+    "build": "tsdown --config tsdown.config.ts",
+    "test": "vitest ./tests --run",
+    "publish": "np"
   },
   "peerDependencies": {
     "vite": ">=7.0.0"
@@ -41,10 +45,12 @@
     "assemblyscript": "^0.28.6"
   },
   "devDependencies": {
-    "vite": "^7.1.5",
     "@types/fs-extra": "^11.0.4",
     "fs-extra": "^11.3.1",
-    "tsdown": "^0.15.0"
+    "np": "^10.2.0",
+    "tsdown": "^0.15.0",
+    "vite": "^7.1.5",
+    "vitest": "^3.2.4"
   },
   "packageManager": "pnpm@10.15.0"
 }
