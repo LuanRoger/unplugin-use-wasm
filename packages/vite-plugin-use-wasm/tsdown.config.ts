@@ -6,5 +6,10 @@ export default defineConfig({
   tsconfig: "tsconfig.json",
   format: "esm",
   sourcemap: true,
-  external: ["vite"],
+  target: "esnext",
+  external: [
+    "vite",
+    "assemblyscript",
+    "fs-extra",
+  ],
 });

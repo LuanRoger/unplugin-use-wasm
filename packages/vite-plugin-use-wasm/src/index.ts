@@ -62,7 +62,7 @@ function getCompilerFlags(options: AssemblyScriptOptions): string[] {
   return flags;
 }
 
-export function wasmDirective(options?: AssemblyScriptOptions): Plugin {
+export default function useWasm(options?: AssemblyScriptOptions): Plugin {
   return {
     name: "use-wasm",
     enforce: "pre",
