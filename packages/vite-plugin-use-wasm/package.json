@@ -22,6 +22,10 @@
     "directive"
   ],
   "author": "Luan Roger <luan.roger.2003@gmail.com> (https://github.com/LuanRoger)",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.mts",
   "exports": {
