@@ -3,7 +3,7 @@ import path from "node:path";
 import { writeFile, mkdtemp } from "node:fs/promises";
 import os from "node:os";
 import { pathExists } from "fs-extra";
-import { wasmDirective } from "../src";
+import useWasm from "../src";
 import { STANDALONE_ENVIRONMENT_FOLDER } from "../src/constants";
 
 // Types
@@ -56,7 +56,7 @@ function createPluginContext({
   return ctx;
 }
 
-function getTransformFn(plugin: ReturnType<typeof wasmDirective>["transform"]) {
+function getTransformFn(plugin: ReturnType<typeof useWasm>["transform"]) {
   return plugin as unknown as (
     this: PluginContextMock,
     code: string,
@@ -80,7 +80,7 @@ beforeAll(() => {
 
 describe("vite-plugin-use-wasm", () => {
   test("load returns null for non-TS file", async () => {
-    const plugin = wasmDirective();
+    const plugin = useWasm();
     const result = await (
       plugin.load as (id: string) => Promise<string | null>
     ).call({}, "some-file.js");
@@ -88,7 +88,7 @@ describe("vite-plugin-use-wasm", () => {
   });
 
   test("load returns code when directive present", async () => {
-    const plugin = wasmDirective();
+    const plugin = useWasm();
     const { filePath } = await createFixtureFile(SIMPLE_AS_CODE);
     const result = await (
       plugin.load as (id: string) => Promise<string | null>
@@ -97,7 +97,7 @@ describe("vite-plugin-use-wasm", () => {
   });
 
   test("transform returns null when directive missing", async () => {
-    const plugin = wasmDirective();
+    const plugin = useWasm();
     const { filePath } = await createFixtureFile("export const x = 1;");
     const transformFn = getTransformFn(plugin.transform);
     const result = await transformFn.call(
@@ -109,7 +109,7 @@ describe("vite-plugin-use-wasm", () => {
   });
 
   test("dev mode embeds wasm as data URL", async () => {
-    const plugin = wasmDirective();
+    const plugin = useWasm();
     const { filePath } = await createFixtureFile(SIMPLE_AS_CODE);
     const ctx = createPluginContext({ watchMode: true });
     const transformFn = getTransformFn(plugin.transform);
@@ -129,7 +129,7 @@ describe("vite-plugin-use-wasm", () => {
   });
 
   test("production mode emits assets and references rollup file url", async () => {
-    const plugin = wasmDirective();
+    const plugin = useWasm();
     const { filePath } = await createFixtureFile(SIMPLE_AS_CODE);
     const ctx = createPluginContext({ watchMode: false });
     const transformFn = getTransformFn(plugin.transform);
@@ -155,7 +155,7 @@ describe("vite-plugin-use-wasm", () => {
   });
 
   test("single quote directive compiles (dev mode)", async () => {
-    const plugin = wasmDirective();
+    const plugin = useWasm();
     const { filePath } = await createFixtureFile(SIMPLE_AS_CODE_SINGLE_QUOTE);
     const ctx = createPluginContext({ watchMode: true });
     const transformFn = getTransformFn(plugin.transform);
@@ -170,7 +170,7 @@ describe("vite-plugin-use-wasm", () => {
   });
 
   test("directive at end is ignored", async () => {
-    const plugin = wasmDirective();
+    const plugin = useWasm();
     const { filePath } = await createFixtureFile(DIRECTIVE_AT_END);
     const ctx = createPluginContext({ watchMode: true });
     const transformFn = getTransformFn(plugin.transform);
@@ -179,7 +179,7 @@ describe("vite-plugin-use-wasm", () => {
   });
 
   test("directive at end (single quote) is ignored", async () => {
-    const plugin = wasmDirective();
+    const plugin = useWasm();
     const { filePath } = await createFixtureFile(DIRECTIVE_AT_END_SINGLE);
     const ctx = createPluginContext({ watchMode: false });
     const transformFn = getTransformFn(plugin.transform);
@@ -192,7 +192,7 @@ describe("vite-plugin-use-wasm", () => {
   });
 
   test("string inside function does not trigger", async () => {
-    const plugin = wasmDirective();
+    const plugin = useWasm();
     const { filePath } = await createFixtureFile(DIRECTIVE_IN_FUNCTION_STRING);
     const transformFn = getTransformFn(plugin.transform);
     const result = await transformFn.call(
@@ -204,7 +204,7 @@ describe("vite-plugin-use-wasm", () => {
   });
 
   test("directive after comment is ignored", async () => {
-    const plugin = wasmDirective();
+    const plugin = useWasm();
     const { filePath } = await createFixtureFile(DIRECTIVE_AFTER_COMMENT);
     const transformFn = getTransformFn(plugin.transform);
     const result = await transformFn.call(
@@ -216,7 +216,7 @@ describe("vite-plugin-use-wasm", () => {
   });
 
   test("directive with leading blank lines works", async () => {
-    const plugin = wasmDirective();
+    const plugin = useWasm();
     const { filePath } = await createFixtureFile(DIRECTIVE_WITH_LEADING_BLANKS);
     const transformFn = getTransformFn(plugin.transform);
     const ctx = createPluginContext({ watchMode: true });
@@ -231,7 +231,7 @@ describe("vite-plugin-use-wasm", () => {
   });
 
   test("directive without semicolon works", async () => {
-    const plugin = wasmDirective();
+    const plugin = useWasm();
     const { filePath } = await createFixtureFile(DIRECTIVE_NO_SEMICOLON);
     const transformFn = getTransformFn(plugin.transform);
     const ctx = createPluginContext({ watchMode: false });
