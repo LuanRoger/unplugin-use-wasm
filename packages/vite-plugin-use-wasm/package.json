@@ -41,7 +41,7 @@
   "scripts": {
     "build": "tsdown --config tsdown.config.ts",
     "test": "vitest ./tests --run",
-    "publish": "npm publish --access public",
+    "publish": "pnpm run build && npm publish --access public",
     "changelog:gen": "git-cliff --config ./scripts/git-cliff.toml --output CHANGELOG.md"
   },
   "peerDependencies": {
