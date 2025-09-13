@@ -6,6 +6,10 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
+    "typeRoots": [
+      "./node_modules/vite-plugin-use-wasm/dist/types"
+    ],
+    "types": ["assemblyscript"],
 
     /* Bundler mode */
     "moduleResolution": "bundler",
