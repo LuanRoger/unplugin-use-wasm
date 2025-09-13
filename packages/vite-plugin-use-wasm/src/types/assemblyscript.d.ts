@@ -14,7 +14,7 @@
 /** biome-ignore-all lint/complexity/noBannedTypes: Declaration direct from AssemblyScript */
 /** biome-ignore-all lint/suspicious/noShadowRestrictedNames: Declaration direct from AssemblyScript */
 /** biome-ignore-all lint/suspicious/noExplicitAny: Declaration direct from AssemblyScript */
-/** biome-ignore-all lint/suspicious/noRedeclare: Declaration direct from AssemblyScript */ /***/
+/** biome-ignore-all lint/suspicious/noRedeclare: Declaration direct from AssemblyScript */
 
 // Types
 

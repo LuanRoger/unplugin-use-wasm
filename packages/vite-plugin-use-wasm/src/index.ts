@@ -107,23 +107,23 @@ export default function useWasm(options?: AssemblyScriptOptions): Plugin {
       await standaloneEnvironment.setup();
       const outFilePath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        wasmFileName,
+        wasmFileName
       );
       const textFilePath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        wasmTextFileName,
+        wasmTextFileName
       );
       const jsBindingsPath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        jsBindingsFileName,
+        jsBindingsFileName
       );
       const dTsPath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        dTsFileName,
+        dTsFileName
       );
       const sourceMapPath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        sourceMapFileName,
+        sourceMapFileName
       );
 
       const compilerOptions = [
@@ -155,7 +155,7 @@ export default function useWasm(options?: AssemblyScriptOptions): Plugin {
       } catch (error) {
         if (error instanceof Error) {
           throw new Error(
-            `AssemblyScript compilation failed: ${error.message}`,
+            `AssemblyScript compilation failed: ${error.message}`
           );
         }
       }
@@ -186,7 +186,7 @@ export default function useWasm(options?: AssemblyScriptOptions): Plugin {
 
         const devModeBindings = generatedBindings.replace(
           BINDINGS_DEFAULT_WASM_URL_REGEX,
-          `"${wasmDataUrl}"`,
+          `"${wasmDataUrl}"`
         );
 
         try {
@@ -229,7 +229,7 @@ export default function useWasm(options?: AssemblyScriptOptions): Plugin {
 
         const resolvedBindings = generatedBindings.replace(
           BINDINGS_DEFAULT_WASM_URL_REGEX,
-          `new URL(import.meta.ROLLUP_FILE_URL_${referenceId})`,
+          `new URL(import.meta.ROLLUP_FILE_URL_${referenceId})`
         );
         return {
           code: resolvedBindings,
