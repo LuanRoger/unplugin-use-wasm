@@ -4,7 +4,7 @@ import {
   STATIC_NODE_IMPORT_REGEX,
 } from "../constants";
 
-export function sanitizeBindingsForBrowser(code: string): string {
+export function adaptBindingsForBrowser(code: string): string {
   let out = code.replace(STATIC_NODE_IMPORT_REGEX, "");
 
   out = out.replace(
