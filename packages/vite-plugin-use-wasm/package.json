@@ -39,7 +39,7 @@
   "scripts": {
     "build": "tsdown --config tsdown.config.ts",
     "test": "vitest ./tests --run",
-    "publish": "np"
+    "publish": "npm publish --access public"
   },
   "peerDependencies": {
     "vite": ">=7.0.0"
@@ -50,7 +50,6 @@
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
     "fs-extra": "^11.3.1",
-    "np": "^10.2.0",
     "tsdown": "^0.15.0",
     "vite": "^7.1.5",
     "vitest": "^3.2.4"
