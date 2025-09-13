@@ -5,12 +5,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/LuanRoger/plugin-use-wasm.git"
+    "url": "https://github.com/LuanRoger/vite-plugin-use-wasm.git"
   },
-  "homepage": "https://github.com/LuanRoger/plugin-use-wasm",
-  "bugs": "https://github.com/LuanRoger/plugin-use-wasm/issues",
+  "homepage": "https://github.com/LuanRoger/vite-plugin-use-wasm",
+  "bugs": "https://github.com/LuanRoger/vite-plugin-use-wasm/issues",
   "keywords": [
-    "rollup",
     "plugin",
     "vite-plugin",
     "webassembly",
