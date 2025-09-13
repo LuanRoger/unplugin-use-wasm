@@ -35,7 +35,8 @@
   "files": [
     "dist",
     "LICENSE",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "README.md"
   ],
   "scripts": {
     "build": "tsdown --config tsdown.config.ts",
