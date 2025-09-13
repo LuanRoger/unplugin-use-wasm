@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { fibWasm } from "./lib/fib-wasm";
 import { fibJs } from "./lib/fib-js";
+import { fibWasm } from "./lib/fib-wasm";
 
 function App() {
   const [wasmResult, setWasmResult] = useState<number | null>(null);

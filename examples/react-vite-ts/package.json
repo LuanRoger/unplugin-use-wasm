@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@rog/vite-plugin-use-wasm": "workspace:*",
+    "vite-plugin-use-wasm": "workspace:*",
     "@tailwindcss/vite": "^4.1.13",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

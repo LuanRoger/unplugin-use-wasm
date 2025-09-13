@@ -1,5 +1,5 @@
 {
-  "name": "@rog/vite-plugin-use-wasm",
+  "name": "vite-plugin-use-wasm",
   "version": "0.0.0",
   "description": "Support to \"use wasm\" directive to compile to WebAssembly",
   "license": "MIT",

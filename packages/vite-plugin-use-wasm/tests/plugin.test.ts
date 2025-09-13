@@ -1,8 +1,8 @@
-import { describe, test, expect, vi, beforeAll } from "vitest";
-import path from "node:path";
-import { writeFile, mkdtemp } from "node:fs/promises";
+import { mkdtemp, writeFile } from "node:fs/promises";
 import os from "node:os";
+import path from "node:path";
 import { pathExists } from "fs-extra";
+import { beforeAll, describe, expect, test, vi } from "vitest";
 import useWasm from "../src";
 import { STANDALONE_ENVIRONMENT_FOLDER } from "../src/constants";
 
@@ -60,7 +60,7 @@ function getTransformFn(plugin: ReturnType<typeof useWasm>["transform"]) {
   return plugin as unknown as (
     this: PluginContextMock,
     code: string,
-    id: string
+    id: string,
   ) => Promise<MinimalTransformResult | null>;
 }
 
@@ -103,7 +103,7 @@ describe("vite-plugin-use-wasm", () => {
     const result = await transformFn.call(
       createPluginContext({ watchMode: false }),
       "export const x = 1;",
-      filePath
+      filePath,
     );
     expect(result).toBeNull();
   });
@@ -123,7 +123,7 @@ describe("vite-plugin-use-wasm", () => {
     expect(result.code).not.toContain("ROLLUP_FILE_URL_");
 
     const standaloneExists = await pathExists(
-      path.join(process.cwd(), STANDALONE_ENVIRONMENT_FOLDER)
+      path.join(process.cwd(), STANDALONE_ENVIRONMENT_FOLDER),
     );
     expect(standaloneExists).toBe(false);
   });
@@ -149,7 +149,7 @@ describe("vite-plugin-use-wasm", () => {
     expect(fileNames.some((n) => n.endsWith(".d.ts"))).toBe(true);
 
     const standaloneExists = await pathExists(
-      path.join(process.cwd(), STANDALONE_ENVIRONMENT_FOLDER)
+      path.join(process.cwd(), STANDALONE_ENVIRONMENT_FOLDER),
     );
     expect(standaloneExists).toBe(false);
   });
@@ -162,7 +162,7 @@ describe("vite-plugin-use-wasm", () => {
     const result = await transformFn.call(
       ctx,
       SIMPLE_AS_CODE_SINGLE_QUOTE,
-      filePath
+      filePath,
     );
     expect(result).not.toBeNull();
     if (result === null) throw new Error("Expected result");
@@ -186,7 +186,7 @@ describe("vite-plugin-use-wasm", () => {
     const result = await transformFn.call(
       ctx,
       DIRECTIVE_AT_END_SINGLE,
-      filePath
+      filePath,
     );
     expect(result).toBeNull();
   });
@@ -198,7 +198,7 @@ describe("vite-plugin-use-wasm", () => {
     const result = await transformFn.call(
       createPluginContext({ watchMode: true }),
       DIRECTIVE_IN_FUNCTION_STRING,
-      filePath
+      filePath,
     );
     expect(result).toBeNull();
   });
@@ -210,7 +210,7 @@ describe("vite-plugin-use-wasm", () => {
     const result = await transformFn.call(
       createPluginContext({ watchMode: true }),
       DIRECTIVE_AFTER_COMMENT,
-      filePath
+      filePath,
     );
     expect(result).toBeNull();
   });
@@ -223,7 +223,7 @@ describe("vite-plugin-use-wasm", () => {
     const result = await transformFn.call(
       ctx,
       DIRECTIVE_WITH_LEADING_BLANKS,
-      filePath
+      filePath,
     );
     expect(result).not.toBeNull();
     if (result === null) throw new Error("Expected result");
@@ -238,7 +238,7 @@ describe("vite-plugin-use-wasm", () => {
     const result = await transformFn.call(
       ctx,
       DIRECTIVE_NO_SEMICOLON,
-      filePath
+      filePath,
     );
     expect(result).not.toBeNull();
     if (result === null) throw new Error("Expected result");
