@@ -8,5 +8,10 @@ export default defineConfig({
   sourcemap: true,
   target: "esnext",
   external: ["vite", "assemblyscript", "fs-extra"],
-  copy: [{ from: "src/types/assemblyscript.d.ts", to: "dist/types/assemblyscript.d.ts" }],
+  copy: [
+    {
+      from: "src/types/assemblyscript.d.ts",
+      to: "dist/types/assemblyscript.d.ts",
+    },
+  ],
 });
