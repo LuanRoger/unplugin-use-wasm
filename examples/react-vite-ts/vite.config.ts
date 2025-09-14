@@ -7,5 +7,20 @@ import Inspect from "vite-plugin-inspect";
 import useWasm from "vite-plugin-use-wasm";
 
 export default defineConfig({
-  plugins: [useWasm(), Inspect(), tailwindcss(), react()],
+  plugins: [
+    useWasm({
+      browser: true,
+      emitWasmTextFile: true,
+      compilerOptions: {
+        optimize: true,
+        optimizeLevel: 3,
+        shrinkLevel: 0,
+        noAssert: true,
+        converge: true,
+      }
+    }),
+    Inspect(),
+    tailwindcss(),
+    react(),
+  ],
 });
