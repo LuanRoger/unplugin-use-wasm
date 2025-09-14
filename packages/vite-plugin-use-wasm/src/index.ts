@@ -29,6 +29,14 @@ interface AssemblyScriptOptions {
   debug?: boolean;
 }
 
+interface PluginOptions {
+  compilerOptions?: AssemblyScriptOptions;
+  browser?: boolean;
+  emitWasmTextFile?: boolean;
+  emitDtsFile?: boolean;
+  emitSourceMap?: boolean;
+}
+
 function getCompilerFlags(options: AssemblyScriptOptions): string[] {
   const flags: string[] = [];
 
@@ -63,7 +71,20 @@ function getCompilerFlags(options: AssemblyScriptOptions): string[] {
   return flags;
 }
 
-export default function useWasm(options?: AssemblyScriptOptions): Plugin {
+export default function useWasm(options?: PluginOptions): Plugin {
+  const {
+    compilerOptions,
+    browser,
+    emitWasmTextFile,
+    emitDtsFile,
+    emitSourceMap,
+  } = options || {
+    browser: true,
+    emitDtsFile: true,
+    emitSourceMap: false,
+    emitWasmTextFile: false,
+  };
+
   return {
     name: "use-wasm",
     enforce: "pre",
@@ -127,7 +148,7 @@ export default function useWasm(options?: AssemblyScriptOptions): Plugin {
         sourceMapFileName
       );
 
-      const compilerOptions = [
+      const compilerFlags = [
         id,
         "--outFile",
         outFilePath,
@@ -141,11 +162,13 @@ export default function useWasm(options?: AssemblyScriptOptions): Plugin {
         "--noAssert",
         "--converge",
         "--optimize",
-        ...(options !== undefined ? getCompilerFlags(options) : []),
+        ...(compilerOptions !== undefined
+          ? getCompilerFlags(compilerOptions)
+          : []),
       ];
 
       try {
-        const { error } = await asc.main(compilerOptions, {
+        const { error } = await asc.main(compilerFlags, {
           stdout: process.stdout,
           stderr: process.stderr,
         });
@@ -176,12 +199,10 @@ export default function useWasm(options?: AssemblyScriptOptions): Plugin {
         remove(tempTsFilePath),
       ]);
 
-      // Detect if we're in Vite dev mode (HMR context)
       const isViteDev =
         typeof this.meta?.watchMode !== "undefined" && this.meta.watchMode;
 
       if (isViteDev) {
-        // In Vite dev mode, embed WASM as base64 data URL to avoid emitFile issues
         const wasmBase64 = wasmBinaryContent.toString("base64");
         const wasmDataUrl = `data:application/wasm;base64,${wasmBase64}`;
 
@@ -201,26 +222,37 @@ export default function useWasm(options?: AssemblyScriptOptions): Plugin {
           map: sourceMapContent,
         };
       } else {
-        // Production mode - use emitFile
         const wasmDistPath = path.join("wasm", wasmFileName);
         const wasmTextDistPath = path.join("wasm", wasmTextFileName);
         const dTsDistPath = path.join("wasm", dTsFileName);
+        const sourceMapDistPath = path.join("wasm", sourceMapFileName);
 
         const referenceId = this.emitFile({
           type: "asset",
           fileName: wasmDistPath,
           source: wasmBinaryContent,
         });
-        this.emitFile({
-          type: "asset",
-          fileName: wasmTextDistPath,
-          source: wasmTextContent,
-        });
-        this.emitFile({
-          type: "asset",
-          fileName: dTsDistPath,
-          source: dTsContent,
-        });
+        if (emitWasmTextFile) {
+          this.emitFile({
+            type: "asset",
+            fileName: wasmTextDistPath,
+            source: wasmTextContent,
+          });
+        }
+        if (emitDtsFile) {
+          this.emitFile({
+            type: "asset",
+            fileName: dTsDistPath,
+            source: dTsContent,
+          });
+        }
+        if (emitSourceMap) {
+          this.emitFile({
+            type: "asset",
+            fileName: sourceMapDistPath,
+            source: sourceMapContent,
+          });
+        }
 
         try {
           await standaloneEnvironment.clean();
@@ -228,9 +260,10 @@ export default function useWasm(options?: AssemblyScriptOptions): Plugin {
           this.warn("Not possible to clean standalone environment");
         }
 
-        const resolvedBindings = adaptBindingsForBrowser(
-          generatedBindings
-        ).replace(
+        const tsBindings = browser
+          ? adaptBindingsForBrowser(generatedBindings)
+          : generatedBindings;
+        const resolvedBindings = tsBindings.replace(
           BINDINGS_DEFAULT_WASM_URL_REGEX,
           `new URL(import.meta.ROLLUP_FILE_URL_${referenceId})`
         );
