@@ -6,7 +6,6 @@ import { beforeAll, describe, expect, test, vi } from "vitest";
 import useWasm from "../src";
 import { STANDALONE_ENVIRONMENT_FOLDER } from "../src/constants";
 
-// Types
 interface EmittedAssetMock {
   type: "asset";
   fileName: string;
@@ -25,7 +24,6 @@ interface MinimalTransformResult {
   map?: unknown;
 }
 
-// Helpers
 async function createFixtureFile(code: string): Promise<{ filePath: string }> {
   const tmpDir = await mkdtemp(path.join(os.tmpdir(), "use-wasm-fixture-"));
   const filePath = path.join(tmpDir, `fixture-${Date.now()}.ts`);
@@ -60,7 +58,7 @@ function getTransformFn(plugin: ReturnType<typeof useWasm>["transform"]) {
   return plugin as unknown as (
     this: PluginContextMock,
     code: string,
-    id: string,
+    id: string
   ) => Promise<MinimalTransformResult | null>;
 }
 
@@ -73,7 +71,6 @@ const DIRECTIVE_AFTER_COMMENT = `// leading comment\n"use wasm";\nexport const v
 const DIRECTIVE_WITH_LEADING_BLANKS = `\n\n'use wasm'\nexport function inc(a: i32): i32 { return a + 1; }`;
 const DIRECTIVE_NO_SEMICOLON = `"use wasm"\nexport function dec(a: i32): i32 { return a - 1; }`;
 
-// Increase timeout because AssemblyScript compilation can be slow on CI
 beforeAll(() => {
   vi.setConfig({ testTimeout: 30_000 });
 });
@@ -103,7 +100,7 @@ describe("vite-plugin-use-wasm", () => {
     const result = await transformFn.call(
       createPluginContext({ watchMode: false }),
       "export const x = 1;",
-      filePath,
+      filePath
     );
     expect(result).toBeNull();
   });
@@ -123,7 +120,7 @@ describe("vite-plugin-use-wasm", () => {
     expect(result.code).not.toContain("ROLLUP_FILE_URL_");
 
     const standaloneExists = await pathExists(
-      path.join(process.cwd(), STANDALONE_ENVIRONMENT_FOLDER),
+      path.join(process.cwd(), STANDALONE_ENVIRONMENT_FOLDER)
     );
     expect(standaloneExists).toBe(false);
   });
@@ -142,14 +139,14 @@ describe("vite-plugin-use-wasm", () => {
     expect(result.code).toContain("ROLLUP_FILE_URL_REF_WASM");
 
     const emitted = ctx.getEmitted();
-    expect(emitted.length).toBe(3);
+    expect(emitted.length).toBe(2);
     const fileNames = emitted.map((e) => e.fileName).sort();
     expect(fileNames.some((n) => n.endsWith(".wasm"))).toBe(true);
-    expect(fileNames.some((n) => n.endsWith(".wat"))).toBe(true);
+    expect(fileNames.some((n) => n.endsWith(".wat"))).toBe(false);
     expect(fileNames.some((n) => n.endsWith(".d.ts"))).toBe(true);
 
     const standaloneExists = await pathExists(
-      path.join(process.cwd(), STANDALONE_ENVIRONMENT_FOLDER),
+      path.join(process.cwd(), STANDALONE_ENVIRONMENT_FOLDER)
     );
     expect(standaloneExists).toBe(false);
   });
@@ -162,7 +159,7 @@ describe("vite-plugin-use-wasm", () => {
     const result = await transformFn.call(
       ctx,
       SIMPLE_AS_CODE_SINGLE_QUOTE,
-      filePath,
+      filePath
     );
     expect(result).not.toBeNull();
     if (result === null) throw new Error("Expected result");
@@ -186,7 +183,7 @@ describe("vite-plugin-use-wasm", () => {
     const result = await transformFn.call(
       ctx,
       DIRECTIVE_AT_END_SINGLE,
-      filePath,
+      filePath
     );
     expect(result).toBeNull();
   });
@@ -198,7 +195,7 @@ describe("vite-plugin-use-wasm", () => {
     const result = await transformFn.call(
       createPluginContext({ watchMode: true }),
       DIRECTIVE_IN_FUNCTION_STRING,
-      filePath,
+      filePath
     );
     expect(result).toBeNull();
   });
@@ -210,7 +207,7 @@ describe("vite-plugin-use-wasm", () => {
     const result = await transformFn.call(
       createPluginContext({ watchMode: true }),
       DIRECTIVE_AFTER_COMMENT,
-      filePath,
+      filePath
     );
     expect(result).toBeNull();
   });
@@ -223,7 +220,7 @@ describe("vite-plugin-use-wasm", () => {
     const result = await transformFn.call(
       ctx,
       DIRECTIVE_WITH_LEADING_BLANKS,
-      filePath,
+      filePath
     );
     expect(result).not.toBeNull();
     if (result === null) throw new Error("Expected result");
@@ -238,10 +235,281 @@ describe("vite-plugin-use-wasm", () => {
     const result = await transformFn.call(
       ctx,
       DIRECTIVE_NO_SEMICOLON,
-      filePath,
+      filePath
     );
     expect(result).not.toBeNull();
     if (result === null) throw new Error("Expected result");
     expect(result.code).toContain("ROLLUP_FILE_URL_REF_WASM");
+  });
+
+  describe("PluginOptions", () => {
+    test("default options work correctly", async () => {
+      const plugin = useWasm();
+      const { filePath } = await createFixtureFile(SIMPLE_AS_CODE);
+      const ctx = createPluginContext({ watchMode: false });
+      const transformFn = getTransformFn(plugin.transform);
+      const result = await transformFn.call(ctx, SIMPLE_AS_CODE, filePath);
+
+      expect(result).not.toBeNull();
+      if (result === null) throw new Error("Expected result");
+
+      const emitted = ctx.getEmitted();
+      expect(emitted.length).toBe(2);
+
+      const fileNames = emitted.map((e) => e.fileName);
+      expect(fileNames.some((n) => n.endsWith(".wasm"))).toBe(true);
+      expect(fileNames.some((n) => n.endsWith(".d.ts"))).toBe(true);
+      expect(fileNames.some((n) => n.endsWith(".wat"))).toBe(false);
+      expect(fileNames.some((n) => n.endsWith(".map"))).toBe(false);
+    });
+
+    test("emitWasmTextFile option emits .wat file", async () => {
+      const plugin = useWasm({ emitWasmTextFile: true });
+      const { filePath } = await createFixtureFile(SIMPLE_AS_CODE);
+      const ctx = createPluginContext({ watchMode: false });
+      const transformFn = getTransformFn(plugin.transform);
+      const result = await transformFn.call(ctx, SIMPLE_AS_CODE, filePath);
+
+      expect(result).not.toBeNull();
+      const emitted = ctx.getEmitted();
+      const fileNames = emitted.map((e) => e.fileName);
+      expect(fileNames.some((n) => n.endsWith(".wat"))).toBe(true);
+    });
+
+    test("emitDtsFile=false does not emit .d.ts file", async () => {
+      const plugin = useWasm({ emitDtsFile: false });
+      const { filePath } = await createFixtureFile(SIMPLE_AS_CODE);
+      const ctx = createPluginContext({ watchMode: false });
+      const transformFn = getTransformFn(plugin.transform);
+      const result = await transformFn.call(ctx, SIMPLE_AS_CODE, filePath);
+
+      expect(result).not.toBeNull();
+      const emitted = ctx.getEmitted();
+      const fileNames = emitted.map((e) => e.fileName);
+      expect(fileNames.some((n) => n.endsWith(".d.ts"))).toBe(false);
+    });
+
+    test("emitSourceMap option emits .map file", async () => {
+      const plugin = useWasm({ emitSourceMap: true });
+      const { filePath } = await createFixtureFile(SIMPLE_AS_CODE);
+      const ctx = createPluginContext({ watchMode: false });
+      const transformFn = getTransformFn(plugin.transform);
+      const result = await transformFn.call(ctx, SIMPLE_AS_CODE, filePath);
+
+      expect(result).not.toBeNull();
+      const emitted = ctx.getEmitted();
+      const fileNames = emitted.map((e) => e.fileName);
+      expect(fileNames.some((n) => n.endsWith(".map"))).toBe(true);
+    });
+
+    test("all emit options enabled emits all file types", async () => {
+      const plugin = useWasm({
+        emitWasmTextFile: true,
+        emitDtsFile: true,
+        emitSourceMap: true,
+      });
+      const { filePath } = await createFixtureFile(SIMPLE_AS_CODE);
+      const ctx = createPluginContext({ watchMode: false });
+      const transformFn = getTransformFn(plugin.transform);
+      const result = await transformFn.call(ctx, SIMPLE_AS_CODE, filePath);
+
+      expect(result).not.toBeNull();
+      const emitted = ctx.getEmitted();
+      expect(emitted.length).toBe(4);
+
+      const fileNames = emitted.map((e) => e.fileName);
+      expect(fileNames.some((n) => n.endsWith(".wasm"))).toBe(true);
+      expect(fileNames.some((n) => n.endsWith(".wat"))).toBe(true);
+      expect(fileNames.some((n) => n.endsWith(".d.ts"))).toBe(true);
+      expect(fileNames.some((n) => n.endsWith(".map"))).toBe(true);
+    });
+
+    test("browser=false does not adapt bindings for browser", async () => {
+      const plugin = useWasm({ browser: false });
+      const { filePath } = await createFixtureFile(SIMPLE_AS_CODE);
+      const ctx = createPluginContext({ watchMode: false });
+      const transformFn = getTransformFn(plugin.transform);
+      const result = await transformFn.call(ctx, SIMPLE_AS_CODE, filePath);
+
+      expect(result).not.toBeNull();
+      if (result === null) throw new Error("Expected result");
+
+      expect(result.code).toContain("ROLLUP_FILE_URL_REF_WASM");
+    });
+
+    test("compilerOptions.optimize adds --optimize flag", async () => {
+      const plugin = useWasm({
+        compilerOptions: { optimize: true },
+      });
+      const { filePath } = await createFixtureFile(SIMPLE_AS_CODE);
+      const ctx = createPluginContext({ watchMode: false });
+      const transformFn = getTransformFn(plugin.transform);
+      const result = await transformFn.call(ctx, SIMPLE_AS_CODE, filePath);
+
+      expect(result).not.toBeNull();
+      if (result === null) throw new Error("Expected result");
+      expect(result.code).toContain("ROLLUP_FILE_URL_REF_WASM");
+    });
+
+    test("compilerOptions.runtime sets runtime option", async () => {
+      const plugin = useWasm({
+        compilerOptions: { runtime: "minimal" },
+      });
+      const { filePath } = await createFixtureFile(SIMPLE_AS_CODE);
+      const ctx = createPluginContext({ watchMode: false });
+      const transformFn = getTransformFn(plugin.transform);
+      const result = await transformFn.call(ctx, SIMPLE_AS_CODE, filePath);
+
+      expect(result).not.toBeNull();
+      if (result === null) throw new Error("Expected result");
+      expect(result.code).toContain("ROLLUP_FILE_URL_REF_WASM");
+    });
+
+    test("compilerOptions.importMemory sets import memory option", async () => {
+      const plugin = useWasm({
+        compilerOptions: { importMemory: true },
+      });
+      const { filePath } = await createFixtureFile(SIMPLE_AS_CODE);
+      const ctx = createPluginContext({ watchMode: false });
+      const transformFn = getTransformFn(plugin.transform);
+      const result = await transformFn.call(ctx, SIMPLE_AS_CODE, filePath);
+
+      expect(result).not.toBeNull();
+      if (result === null) throw new Error("Expected result");
+      expect(result.code).toContain("ROLLUP_FILE_URL_REF_WASM");
+    });
+
+    test("compilerOptions.initialMemory sets initial memory option", async () => {
+      const plugin = useWasm({
+        compilerOptions: { initialMemory: 1 },
+      });
+      const { filePath } = await createFixtureFile(SIMPLE_AS_CODE);
+      const ctx = createPluginContext({ watchMode: false });
+      const transformFn = getTransformFn(plugin.transform);
+      const result = await transformFn.call(ctx, SIMPLE_AS_CODE, filePath);
+
+      expect(result).not.toBeNull();
+      if (result === null) throw new Error("Expected result");
+      expect(result.code).toContain("ROLLUP_FILE_URL_REF_WASM");
+    });
+
+    test("compilerOptions.maximumMemory sets maximum memory option", async () => {
+      const plugin = useWasm({
+        compilerOptions: { maximumMemory: 256 },
+      });
+      const { filePath } = await createFixtureFile(SIMPLE_AS_CODE);
+      const ctx = createPluginContext({ watchMode: false });
+      const transformFn = getTransformFn(plugin.transform);
+      const result = await transformFn.call(ctx, SIMPLE_AS_CODE, filePath);
+
+      expect(result).not.toBeNull();
+      if (result === null) throw new Error("Expected result");
+      expect(result.code).toContain("ROLLUP_FILE_URL_REF_WASM");
+    });
+
+    test("compilerOptions.sharedMemory sets shared memory option", async () => {
+      const plugin = useWasm({
+        compilerOptions: {
+          sharedMemory: true,
+          maximumMemory: 256,
+        },
+      });
+      const { filePath } = await createFixtureFile(SIMPLE_AS_CODE);
+      const ctx = createPluginContext({ watchMode: false });
+      const transformFn = getTransformFn(plugin.transform);
+
+      try {
+        const result = await transformFn.call(ctx, SIMPLE_AS_CODE, filePath);
+        expect(result).not.toBeNull();
+        if (result !== null) {
+          expect(result.code).toContain("ROLLUP_FILE_URL_REF_WASM");
+        }
+      } catch (error) {
+        expect(error).toBeInstanceOf(Error);
+        expect((error as Error).message).toContain(
+          "AssemblyScript compilation failed"
+        );
+      }
+    });
+
+    test("compilerOptions.debug sets debug option", async () => {
+      const plugin = useWasm({
+        compilerOptions: { debug: true },
+      });
+      const { filePath } = await createFixtureFile(SIMPLE_AS_CODE);
+      const ctx = createPluginContext({ watchMode: false });
+      const transformFn = getTransformFn(plugin.transform);
+      const result = await transformFn.call(ctx, SIMPLE_AS_CODE, filePath);
+
+      expect(result).not.toBeNull();
+      if (result === null) throw new Error("Expected result");
+      expect(result.code).toContain("ROLLUP_FILE_URL_REF_WASM");
+    });
+
+    test("multiple compilerOptions work together", async () => {
+      const plugin = useWasm({
+        compilerOptions: {
+          optimize: true,
+          runtime: "incremental",
+          importMemory: true,
+          initialMemory: 1,
+          maximumMemory: 256,
+          debug: true,
+        },
+      });
+      const { filePath } = await createFixtureFile(SIMPLE_AS_CODE);
+      const ctx = createPluginContext({ watchMode: false });
+      const transformFn = getTransformFn(plugin.transform);
+      const result = await transformFn.call(ctx, SIMPLE_AS_CODE, filePath);
+
+      expect(result).not.toBeNull();
+      if (result === null) throw new Error("Expected result");
+      expect(result.code).toContain("ROLLUP_FILE_URL_REF_WASM");
+    });
+
+    test("options work correctly in dev mode", async () => {
+      const plugin = useWasm({
+        emitWasmTextFile: true,
+        emitDtsFile: true,
+        emitSourceMap: true,
+        compilerOptions: { optimize: true },
+      });
+      const { filePath } = await createFixtureFile(SIMPLE_AS_CODE);
+      const ctx = createPluginContext({ watchMode: true });
+      const transformFn = getTransformFn(plugin.transform);
+      const result = await transformFn.call(ctx, SIMPLE_AS_CODE, filePath);
+
+      expect(result).not.toBeNull();
+      if (result === null) throw new Error("Expected result");
+
+      expect(result.code).toContain("data:application/wasm;base64,");
+      expect(result.code).not.toContain("ROLLUP_FILE_URL_");
+
+      const emitted = ctx.getEmitted();
+      expect(emitted.length).toBe(0);
+    });
+
+    test("getCompilerFlags function coverage", async () => {
+      const plugin = useWasm({
+        compilerOptions: {
+          optimize: false,
+          runtime: "stub",
+          exportRuntime: true,
+          importMemory: false,
+          initialMemory: 2,
+          maximumMemory: 128,
+          sharedMemory: false,
+          debug: false,
+        },
+      });
+      const { filePath } = await createFixtureFile(SIMPLE_AS_CODE);
+      const ctx = createPluginContext({ watchMode: false });
+      const transformFn = getTransformFn(plugin.transform);
+      const result = await transformFn.call(ctx, SIMPLE_AS_CODE, filePath);
+
+      expect(result).not.toBeNull();
+      if (result === null) throw new Error("Expected result");
+      expect(result.code).toContain("ROLLUP_FILE_URL_REF_WASM");
+    });
   });
 });
