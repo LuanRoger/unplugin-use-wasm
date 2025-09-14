@@ -2,7 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/vite-plugin-use-wasm?style=flat&logo=npm&labelColor=CB3837)](https://www.npmjs.com/package/vite-plugin-use-wasm)
 [![Checked with Biome](https://img.shields.io/badge/Checked_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev)
-[![GitHub License](https://img.shields.io/github/license/LuanRoger/vite-plugin-use-wasm?style=flat)](https://github.com/LuanRoger/vite-plugin-use-wasm/blob/main/LICENSE)
+[![NPM License](https://img.shields.io/npm/l/vite-plugin-use-wasm?style=flat)](https://github.com/LuanRoger/vite-plugin-use-wasm/blob/main/LICENSE)
 
 A Vite plugin that adds support for the `"use wasm"` directive in TypeScript files, enabling seamless integration and compilation of WebAssembly modules.
 
@@ -21,6 +21,21 @@ It uses the [AssemblyScript](https://www.assemblyscript.org/) compiler to compil
 
 ```bash
 npm install vite-plugin-use-wasm --save-dev
+```
+
+### AssemblyScript types
+
+This package also have the AssemblyScript portable types, so you do not get warnings when you try to use the types `i32`, `f64`, `bool`, etc.
+
+In your `tsconfig.json`, add the following to the `compilerOptions`:
+
+```json
+{
+  "compilerOptions": {
+    "typeRoots": ["./node_modules/vite-plugin-use-wasm/dist/types"],
+    "types": ["assemblyscript"],
+  }
+}
 ```
 
 ## Usage
