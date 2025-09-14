@@ -17,59 +17,8 @@ import {
 } from "./constants";
 import { StandaloneEnvironment } from "./utils";
 import { adaptBindingsForBrowser } from "./utils/browser";
-
-interface AssemblyScriptOptions {
-  optimize?: boolean;
-  runtime?: "incremental" | "minimal" | "stub";
-  exportRuntime?: boolean;
-  importMemory?: boolean;
-  initialMemory?: number;
-  maximumMemory?: number;
-  sharedMemory?: boolean;
-  debug?: boolean;
-}
-
-interface PluginOptions {
-  compilerOptions?: AssemblyScriptOptions;
-  browser?: boolean;
-  emitWasmTextFile?: boolean;
-  emitDtsFile?: boolean;
-  emitSourceMap?: boolean;
-}
-
-function getCompilerFlags(options: AssemblyScriptOptions): string[] {
-  const flags: string[] = [];
-
-  if (options.optimize) {
-    flags.push("--optimize");
-  }
-
-  if (options.runtime) {
-    flags.push("--runtime", options.runtime);
-  }
-
-  if (options.importMemory) {
-    flags.push("--importMemory");
-  }
-
-  if (options.initialMemory) {
-    flags.push("--initialMemory", options.initialMemory.toString());
-  }
-
-  if (options.maximumMemory) {
-    flags.push("--maximumMemory", options.maximumMemory.toString());
-  }
-
-  if (options.sharedMemory) {
-    flags.push("--sharedMemory");
-  }
-
-  if (options.debug) {
-    flags.push("--debug");
-  }
-
-  return flags;
-}
+import type { PluginOptions } from "./options";
+import { getCompilerFlags } from "./utils/compiler";
 
 export default function useWasm(options?: PluginOptions): Plugin {
   const {
@@ -148,6 +97,8 @@ export default function useWasm(options?: PluginOptions): Plugin {
         sourceMapFileName
       );
 
+      const userDefinedFlags =
+        compilerOptions !== undefined ? getCompilerFlags(compilerOptions) : [];
       const compilerFlags = [
         id,
         "--outFile",
@@ -158,13 +109,7 @@ export default function useWasm(options?: PluginOptions): Plugin {
         sourceMapPath,
         "--bindings",
         "esm",
-        "-Ospeed",
-        "--noAssert",
-        "--converge",
-        "--optimize",
-        ...(compilerOptions !== undefined
-          ? getCompilerFlags(compilerOptions)
-          : []),
+        ...userDefinedFlags,
       ];
 
       try {
