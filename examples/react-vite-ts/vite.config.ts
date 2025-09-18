@@ -17,7 +17,7 @@ export default defineConfig({
         shrinkLevel: 0,
         noAssert: true,
         converge: true,
-      }
+      },
     }),
     Inspect(),
     tailwindcss(),
