@@ -122,6 +122,7 @@ export default function useWasm(options?: PluginOptions): Plugin {
           throw error;
         }
       } catch (error) {
+        await standaloneEnvironment.clean();
         if (error instanceof Error) {
           throw new Error(
             `AssemblyScript compilation failed: ${error.message}`
