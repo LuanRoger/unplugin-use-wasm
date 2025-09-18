@@ -16,12 +16,12 @@ export function adaptBindingsForBrowser(code: string): string {
       const res = await globalThis.fetch(url);
       const bytes = await res.arrayBuffer();
       return await globalThis.WebAssembly.compile(bytes);
-    })()`
+    })()`,
   );
 
   out = out.replace(
     DYNAMIC_NODE_IMPORT_REGEX,
-    "Promise.reject(new Error('node: modules are unavailable in browser'))"
+    "Promise.reject(new Error('node: modules are unavailable in browser'))",
   );
 
   return out;

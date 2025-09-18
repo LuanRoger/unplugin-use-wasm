@@ -58,7 +58,7 @@ function getTransformFn(plugin: ReturnType<typeof useWasm>["transform"]) {
   return plugin as unknown as (
     this: PluginContextMock,
     code: string,
-    id: string
+    id: string,
   ) => Promise<MinimalTransformResult | null>;
 }
 
@@ -100,7 +100,7 @@ describe("vite-plugin-use-wasm", () => {
     const result = await transformFn.call(
       createPluginContext({ watchMode: false }),
       "export const x = 1;",
-      filePath
+      filePath,
     );
     expect(result).toBeNull();
   });
@@ -120,7 +120,7 @@ describe("vite-plugin-use-wasm", () => {
     expect(result.code).not.toContain("ROLLUP_FILE_URL_");
 
     const standaloneExists = await pathExists(
-      path.join(process.cwd(), STANDALONE_ENVIRONMENT_FOLDER)
+      path.join(process.cwd(), STANDALONE_ENVIRONMENT_FOLDER),
     );
     expect(standaloneExists).toBe(false);
   });
@@ -146,7 +146,7 @@ describe("vite-plugin-use-wasm", () => {
     expect(fileNames.some((n) => n.endsWith(".d.ts"))).toBe(true);
 
     const standaloneExists = await pathExists(
-      path.join(process.cwd(), STANDALONE_ENVIRONMENT_FOLDER)
+      path.join(process.cwd(), STANDALONE_ENVIRONMENT_FOLDER),
     );
     expect(standaloneExists).toBe(false);
   });
@@ -159,7 +159,7 @@ describe("vite-plugin-use-wasm", () => {
     const result = await transformFn.call(
       ctx,
       SIMPLE_AS_CODE_SINGLE_QUOTE,
-      filePath
+      filePath,
     );
     expect(result).not.toBeNull();
     if (result === null) throw new Error("Expected result");
@@ -183,7 +183,7 @@ describe("vite-plugin-use-wasm", () => {
     const result = await transformFn.call(
       ctx,
       DIRECTIVE_AT_END_SINGLE,
-      filePath
+      filePath,
     );
     expect(result).toBeNull();
   });
@@ -195,7 +195,7 @@ describe("vite-plugin-use-wasm", () => {
     const result = await transformFn.call(
       createPluginContext({ watchMode: true }),
       DIRECTIVE_IN_FUNCTION_STRING,
-      filePath
+      filePath,
     );
     expect(result).toBeNull();
   });
@@ -207,7 +207,7 @@ describe("vite-plugin-use-wasm", () => {
     const result = await transformFn.call(
       createPluginContext({ watchMode: true }),
       DIRECTIVE_AFTER_COMMENT,
-      filePath
+      filePath,
     );
     expect(result).toBeNull();
   });
@@ -220,7 +220,7 @@ describe("vite-plugin-use-wasm", () => {
     const result = await transformFn.call(
       ctx,
       DIRECTIVE_WITH_LEADING_BLANKS,
-      filePath
+      filePath,
     );
     expect(result).not.toBeNull();
     if (result === null) throw new Error("Expected result");
@@ -235,7 +235,7 @@ describe("vite-plugin-use-wasm", () => {
     const result = await transformFn.call(
       ctx,
       DIRECTIVE_NO_SEMICOLON,
-      filePath
+      filePath,
     );
     expect(result).not.toBeNull();
     if (result === null) throw new Error("Expected result");
@@ -427,7 +427,7 @@ describe("vite-plugin-use-wasm", () => {
       } catch (error) {
         expect(error).toBeInstanceOf(Error);
         expect((error as Error).message).toContain(
-          "AssemblyScript compilation failed"
+          "AssemblyScript compilation failed",
         );
       }
     });
