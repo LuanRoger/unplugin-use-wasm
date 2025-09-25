@@ -1,4 +1,15 @@
 /**
+ * Enables WebAssembly features being disabled by default.
+ */
+export interface AssemblyScriptFeatures {
+  /**
+   * Enable support for WebAssembly threads.
+   * @default false (uses AssemblyScript default)
+   */
+  threads?: boolean;
+}
+
+/**
  * AssemblyScript compiler options that can be passed to the AssemblyScript compiler.
  * These options control how the AssemblyScript code is compiled to WebAssembly.
  */
@@ -86,6 +97,12 @@ export interface AssemblyScriptOptions {
    * @default undefined (uses AssemblyScript default)
    */
   debug?: boolean;
+
+  /**
+   * Enable specific WebAssembly features that are disabled by default.
+   * Use this to enable experimental or non-standard features.
+   */
+  features?: AssemblyScriptFeatures;
 }
 
 /**
