@@ -16,9 +16,11 @@ import {
   WASM_TEXT_EXTENSION,
 } from "./constants";
 import type { PluginOptions } from "./options";
-import { StandaloneEnvironment } from "./utils";
-import { adaptBindingsForBrowser } from "./utils/browser";
-import { getCompilerFlags } from "./utils/compiler";
+import {
+  StandaloneEnvironment,
+  adaptBindingsForBrowser,
+  getCompilerFlags,
+} from "./utils";
 
 export default function useWasm(options?: PluginOptions): Plugin {
   const {
@@ -78,23 +80,23 @@ export default function useWasm(options?: PluginOptions): Plugin {
       await standaloneEnvironment.setup();
       const outFilePath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        wasmFileName,
+        wasmFileName
       );
       const textFilePath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        wasmTextFileName,
+        wasmTextFileName
       );
       const jsBindingsPath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        jsBindingsFileName,
+        jsBindingsFileName
       );
       const dTsPath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        dTsFileName,
+        dTsFileName
       );
       const sourceMapPath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        sourceMapFileName,
+        sourceMapFileName
       );
 
       const userDefinedFlags =
@@ -125,7 +127,7 @@ export default function useWasm(options?: PluginOptions): Plugin {
         await standaloneEnvironment.clean();
         if (error instanceof Error) {
           throw new Error(
-            `AssemblyScript compilation failed: ${error.message}`,
+            `AssemblyScript compilation failed: ${error.message}`
           );
         }
       }
@@ -154,7 +156,7 @@ export default function useWasm(options?: PluginOptions): Plugin {
 
         const devModeBindings = generatedBindings.replace(
           BINDINGS_DEFAULT_WASM_URL_REGEX,
-          `"${wasmDataUrl}"`,
+          `"${wasmDataUrl}"`
         );
 
         try {
@@ -211,7 +213,7 @@ export default function useWasm(options?: PluginOptions): Plugin {
           : generatedBindings;
         const resolvedBindings = tsBindings.replace(
           BINDINGS_DEFAULT_WASM_URL_REGEX,
-          `new URL(import.meta.ROLLUP_FILE_URL_${referenceId})`,
+          `new URL(import.meta.ROLLUP_FILE_URL_${referenceId})`
         );
         return {
           code: resolvedBindings,
