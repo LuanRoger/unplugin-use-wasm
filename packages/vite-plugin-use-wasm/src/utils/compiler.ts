@@ -1,4 +1,18 @@
-import type { AssemblyScriptOptions } from "../options";
+import type { AssemblyScriptFeatures, AssemblyScriptOptions } from "../options";
+
+function getFeaturesFlags(features: AssemblyScriptFeatures): string[] {
+  const flags: string[] = [];
+
+  for (const [feature, enabled] of Object.entries(features)) {
+    if (enabled) {
+      flags.push(`--enable`, feature);
+    } else {
+      flags.push(`--disable`, feature);
+    }
+  }
+
+  return flags;
+}
 
 export function getCompilerFlags(options: AssemblyScriptOptions): string[] {
   const flags: string[] = [];
@@ -13,6 +27,10 @@ export function getCompilerFlags(options: AssemblyScriptOptions): string[] {
 
   if (options.shrinkLevel !== undefined) {
     flags.push("--shrinkLevel", options.shrinkLevel.toString());
+  }
+
+  if (options.features) {
+    flags.push(...getFeaturesFlags(options.features));
   }
 
   if (options.converge) {

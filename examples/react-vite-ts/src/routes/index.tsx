@@ -1,8 +1,13 @@
 import { useState } from "react";
-import { fibJs } from "./lib/fib-js";
-import { fibWasm } from "./lib/fib-wasm";
+import { fibJs } from "../lib/fib/js";
+import { fibWasm } from "../lib/fib/wasm";
+import { createFileRoute } from "@tanstack/react-router";
 
-function App() {
+export const Route = createFileRoute("/")({
+  component: Index,
+});
+
+function Index() {
   const [wasmResult, setWasmResult] = useState<number | null>(null);
   const [wasmInputValue, setWasmInputValue] = useState<string>("");
 
@@ -63,7 +68,7 @@ function App() {
           </div>
           <div className="flex gap-2 justify-between">
             <h3 className="font-bold">Time:</h3>
-            <p>{wasmTime !== null ? `${wasmTime} ms` : "No result"}</p>
+            <p>{wasmTime !== null ? `${wasmTime} ms` : `No result`}</p>
           </div>
         </div>
       </div>
@@ -90,12 +95,10 @@ function App() {
           </div>
           <div className="flex gap-2 justify-between">
             <h3 className="font-bold">Time:</h3>
-            <p>{jsTime !== null ? `${jsTime} ms` : "No result"}</p>
+            <p>{jsTime !== null ? `${jsTime} ms` : `No result`}</p>
           </div>
         </div>
       </div>
     </main>
   );
 }
-
-export default App;

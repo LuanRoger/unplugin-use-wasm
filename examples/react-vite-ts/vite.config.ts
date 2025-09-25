@@ -2,12 +2,17 @@
 
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
+import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import { defineConfig } from "vite";
 import Inspect from "vite-plugin-inspect";
 import useWasm from "vite-plugin-use-wasm";
 
 export default defineConfig({
   plugins: [
+    tanstackRouter({
+      target: "react",
+      autoCodeSplitting: true,
+    }),
     useWasm({
       browser: true,
       emitWasmTextFile: true,
