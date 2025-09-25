@@ -35,6 +35,42 @@ declare type indexof<T extends unknown[]> = keyof T;
 /** Special type evaluating the indexed access value type. */
 declare type valueof<T extends unknown[]> = T[0];
 
+declare namespace atomic {
+  /** Atomically loads an integer value from memory and returns it. */
+  export function load<T>(ptr: usize, immOffset?: usize): T;
+  /** Atomically stores an integer value to memory. */
+  export function store<T>(ptr: usize, value: T, immOffset?: usize): void;
+  /** Atomically adds an integer value in memory. */
+  export function add<T>(ptr: usize, value: T, immOffset?: usize): T;
+  /** Atomically subtracts an integer value in memory. */
+  export function sub<T>(ptr: usize, value: T, immOffset?: usize): T;
+  /** Atomically performs a bitwise AND operation on an integer value in memory. */
+  export function and<T>(ptr: usize, value: T, immOffset?: usize): T;
+  /** Atomically performs a bitwise OR operation on an integer value in memory. */
+  export function or<T>(ptr: usize, value: T, immOffset?: usize): T;
+  /** Atomically performs a bitwise XOR operation on an integer value in memory. */
+  export function xor<T>(ptr: usize, value: T, immOffset?: usize): T;
+  /** Atomically exchanges an integer value in memory. */
+  export function xchg<T>(ptr: usize, value: T, immOffset?: usize): T;
+  /** Atomically compares and exchanges an integer value in memory if the condition is met. */
+  export function cmpxchg<T>(
+    ptr: usize,
+    expected: T,
+    replacement: T,
+    immOffset?: usize
+  ): T;
+  /** Performs a wait operation on an address in memory suspending this agent if the integer condition is met. */
+  export function wait<T>(
+    ptr: usize,
+    expected: T,
+    timeout?: i64
+  ): AtomicWaitResult;
+  /** Performs a notify operation on an address in memory waking up suspended agents. */
+  export function notify(ptr: usize, count?: i32): i32;
+  /** Performs a fence operation, preserving synchronization guarantees of higher level languages. */
+  export function fence(): void;
+}
+
 // Compiler hints
 
 /** Compiler target. 0 = JS, 1 = WASM32, 2 = WASM64. */
@@ -118,7 +154,7 @@ declare function isConstant(expression: any): bool;
 /** Traps if the specified value is not true-ish, otherwise returns the value. */
 declare function assert<T>(
   isTrueish: T,
-  message?: string,
+  message?: string
 ): T & (object | string | number); // any better way to model `: T != null`?
 /** Parses an integer string to a 64-bit float. */
 declare function parseInt(str: string, radix?: i32): f64;
@@ -354,7 +390,7 @@ declare function trace(
   a1?: f64,
   a2?: f64,
   a3?: f64,
-  a4?: f64,
+  a4?: f64
 ): void;
 
 declare interface Array<T> {
@@ -362,7 +398,7 @@ declare interface Array<T> {
   at(index: i32): T;
   /** Returns an index start searching from the end in the array */
   findLastIndex(
-    callbackfn: (value: T, index: i32, self: Array<T>) => bool,
+    callbackfn: (value: T, index: i32, self: Array<T>) => bool
   ): i32;
 }
 
@@ -376,7 +412,7 @@ declare interface Int8Array {
   at(index: i32): i8;
   /** Returns an index start searching from the end in the typedarray */
   findLastIndex(
-    callbackfn: (value: i8, index: i32, self: Int8Array) => bool,
+    callbackfn: (value: i8, index: i32, self: Int8Array) => bool
   ): i32;
 }
 
@@ -390,7 +426,7 @@ declare interface Uint8Array {
   at(index: i32): u8;
   /** Returns an index start searching from the end in the typedarray */
   findLastIndex(
-    callbackfn: (value: u8, index: i32, self: Uint8Array) => bool,
+    callbackfn: (value: u8, index: i32, self: Uint8Array) => bool
   ): i32;
 }
 
@@ -404,7 +440,7 @@ declare interface Uint8ClampedArray {
   at(index: i32): u8;
   /** Returns an index start searching from the end in the typedarray */
   findLastIndex(
-    callbackfn: (value: u8, index: i32, self: Uint8ClampedArray) => bool,
+    callbackfn: (value: u8, index: i32, self: Uint8ClampedArray) => bool
   ): i32;
 }
 
@@ -418,7 +454,7 @@ declare interface Int16Array {
   at(index: i32): i16;
   /** Returns an index start searching from the end in the typedarray */
   findLastIndex(
-    callbackfn: (value: i16, index: i32, self: Int16Array) => bool,
+    callbackfn: (value: i16, index: i32, self: Int16Array) => bool
   ): i32;
 }
 
@@ -432,7 +468,7 @@ declare interface Uint16Array {
   at(index: i32): u16;
   /** Returns an index start searching from the end in the typedarray */
   findLastIndex(
-    callbackfn: (value: u16, index: i32, self: Uint16Array) => bool,
+    callbackfn: (value: u16, index: i32, self: Uint16Array) => bool
   ): i32;
 }
 
@@ -446,7 +482,7 @@ declare interface Int32Array {
   at(index: i32): i32;
   /** Returns an index start searching from the end in the typedarray */
   findLastIndex(
-    callbackfn: (value: i32, index: i32, self: Int32Array) => bool,
+    callbackfn: (value: i32, index: i32, self: Int32Array) => bool
   ): i32;
 }
 
@@ -460,7 +496,7 @@ declare interface Uint32Array {
   at(index: i32): u32;
   /** Returns an index start searching from the end in the typedarray */
   findLastIndex(
-    callbackfn: (value: u32, index: i32, self: Uint32Array) => bool,
+    callbackfn: (value: u32, index: i32, self: Uint32Array) => bool
   ): i32;
 }
 
@@ -474,7 +510,7 @@ declare interface Float32Array {
   at(index: i32): f32;
   /** Returns an index start searching from the end in the typedarray */
   findLastIndex(
-    callbackfn: (value: f32, index: i32, self: Float32Array) => bool,
+    callbackfn: (value: f32, index: i32, self: Float32Array) => bool
   ): i32;
 }
 
@@ -488,6 +524,6 @@ declare interface Float64Array {
   at(index: i32): f64;
   /** Returns an index start searching from the end in the typedarray */
   findLastIndex(
-    callbackfn: (value: f64, index: i32, self: Float64Array) => bool,
+    callbackfn: (value: f64, index: i32, self: Float64Array) => bool
   ): i32;
 }
