@@ -3,7 +3,8 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import asc from "assemblyscript/asc";
 import { remove } from "fs-extra";
-import type { Plugin } from "vite";
+import type { UnpluginFactory } from "unplugin";
+import { createUnplugin } from "unplugin";
 
 import {
   BINDINGS_DEFAULT_WASM_URL_REGEX,
@@ -20,7 +21,10 @@ import { StandaloneEnvironment } from "./utils";
 import { adaptBindingsForBrowser } from "./utils/browser";
 import { getCompilerFlags } from "./utils/compiler";
 
-export default function useWasm(options?: PluginOptions): Plugin {
+export const useWasmBase: UnpluginFactory<PluginOptions | undefined> = (
+  options,
+  meta
+) => {
   const {
     compilerOptions,
     browser,
@@ -78,23 +82,23 @@ export default function useWasm(options?: PluginOptions): Plugin {
       await standaloneEnvironment.setup();
       const outFilePath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        wasmFileName,
+        wasmFileName
       );
       const textFilePath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        wasmTextFileName,
+        wasmTextFileName
       );
       const jsBindingsPath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        jsBindingsFileName,
+        jsBindingsFileName
       );
       const dTsPath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        dTsFileName,
+        dTsFileName
       );
       const sourceMapPath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        sourceMapFileName,
+        sourceMapFileName
       );
 
       const userDefinedFlags =
@@ -125,7 +129,7 @@ export default function useWasm(options?: PluginOptions): Plugin {
         await standaloneEnvironment.clean();
         if (error instanceof Error) {
           throw new Error(
-            `AssemblyScript compilation failed: ${error.message}`,
+            `AssemblyScript compilation failed: ${error.message}`
           );
         }
       }
@@ -146,7 +150,9 @@ export default function useWasm(options?: PluginOptions): Plugin {
       ]);
 
       const isViteDev =
-        typeof this.meta?.watchMode !== "undefined" && this.meta.watchMode;
+        meta.framework === "vite" &&
+        typeof meta?.watchMode !== "undefined" &&
+        meta.watchMode;
 
       if (isViteDev) {
         const wasmBase64 = wasmBinaryContent.toString("base64");
@@ -154,7 +160,7 @@ export default function useWasm(options?: PluginOptions): Plugin {
 
         const devModeBindings = generatedBindings.replace(
           BINDINGS_DEFAULT_WASM_URL_REGEX,
-          `"${wasmDataUrl}"`,
+          `"${wasmDataUrl}"`
         );
 
         try {
@@ -211,7 +217,7 @@ export default function useWasm(options?: PluginOptions): Plugin {
           : generatedBindings;
         const resolvedBindings = tsBindings.replace(
           BINDINGS_DEFAULT_WASM_URL_REGEX,
-          `new URL(import.meta.ROLLUP_FILE_URL_${referenceId})`,
+          `new URL(import.meta.ROLLUP_FILE_URL_${referenceId})`
         );
         return {
           code: resolvedBindings,
@@ -220,4 +226,8 @@ export default function useWasm(options?: PluginOptions): Plugin {
       }
     },
   };
-}
+};
+
+export const unpluginUseWasm = createUnplugin(useWasmBase);
+
+export default unpluginUseWasm;

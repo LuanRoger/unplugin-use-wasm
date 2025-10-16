@@ -28,9 +28,26 @@
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.mts",
   "exports": {
-    "types": "./dist/index.d.mts",
-    "import": "./dist/index.mjs",
-    "default": "./dist/index.cjs"
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs",
+      "default": "./dist/index.cjs"
+    },
+    "./vite": {
+      "types": "./dist/vite/index.d.mts",
+      "import": "./dist/vite/index.mjs",
+      "default": "./dist/vite/index.cjs"
+    },
+    "./rollup": {
+      "types": "./dist/rollup/index.d.mts",
+      "import": "./dist/rollup/index.mjs",
+      "default": "./dist/rollup/index.cjs"
+    },
+    "./rolldown": {
+      "types": "./dist/rolldown/index.d.mts",
+      "import": "./dist/rolldown/index.mjs",
+      "default": "./dist/rolldown/index.cjs"
+    }
   },
   "files": [
     "dist",
@@ -39,7 +56,6 @@
   ],
   "scripts": {
     "build": "tsdown --config tsdown.config.ts",
-    "test": "vitest ./tests --run",
     "publish": "pnpm run build && npm publish --access public"
   },
   "peerDependencies": {
@@ -52,6 +68,7 @@
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
     "tsdown": "^0.15.0",
+    "unplugin": "^2.3.10",
     "vite": "^7.1.5",
     "vitest": "^3.2.4"
   },
