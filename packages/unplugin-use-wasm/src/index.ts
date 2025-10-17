@@ -149,10 +149,10 @@ export const useWasmBase: UnpluginFactory<PluginOptions | undefined> = (
         remove(tempTsFilePath),
       ]);
 
-      const isViteDev =
-        meta.framework === "vite" &&
-        typeof meta?.watchMode !== "undefined" &&
-        meta.watchMode;
+      const isVite = meta.framework === "vite";
+      const isViteDev = isVite
+        ? process.env.NODE_ENV === "development"
+        : Boolean(meta.watchMode);
 
       if (isViteDev) {
         const wasmBase64 = wasmBinaryContent.toString("base64");
