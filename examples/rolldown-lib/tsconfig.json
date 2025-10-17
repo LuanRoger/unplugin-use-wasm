@@ -6,7 +6,7 @@
     "lib": ["ESNext"],
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "typeRoots": ["./node_modules/vite-plugin-use-wasm/dist/types"],
+    "typeRoots": ["./node_modules/unplugin-use-wasm/dist/types"],
     "types": ["assemblyscript"],
 
     /* Bundler mode */

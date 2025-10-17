@@ -1,6 +1,6 @@
 {
-  "name": "vite-plugin-use-wasm",
-  "version": "1.1.1",
+  "name": "unplugin-use-wasm",
+  "version": "1.0.0",
   "description": "Support to \"use wasm\" directive to compile to WebAssembly",
   "license": "MIT",
   "repository": {
@@ -12,6 +12,9 @@
   "keywords": [
     "plugin",
     "vite-plugin",
+    "rollup-plugin",
+    "rolldown-plugin",
+    "unplugin",
     "webassembly",
     "wasm",
     "wast",

@@ -9,7 +9,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vite-plugin-use-wasm": "workspace:*",
     "@tailwindcss/vite": "^4.1.13",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
@@ -22,6 +21,7 @@
     "@vitejs/plugin-react": "^5.0.0",
     "globals": "^16.3.0",
     "typescript": "~5.8.3",
+    "unplugin-use-wasm": "workspace:*",
     "vite-plugin-inspect": "^11.3.3"
   }
 }

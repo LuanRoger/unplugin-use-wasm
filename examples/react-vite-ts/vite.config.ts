@@ -4,7 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import Inspect from "vite-plugin-inspect";
-import useWasm from "vite-plugin-use-wasm/vite";
+import useWasm from "unplugin-use-wasm/vite";
 
 export default defineConfig({
   plugins: [

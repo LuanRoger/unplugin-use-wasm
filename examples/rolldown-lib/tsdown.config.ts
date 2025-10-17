@@ -1,5 +1,5 @@
 import { defineConfig } from "tsdown";
-import useWasm from "vite-plugin-use-wasm/rolldown";
+import useWasm from "unplugin-use-wasm/rolldown";
 
 export default defineConfig({
   entry: {
