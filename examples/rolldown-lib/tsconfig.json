@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "useDefineForClassFields": true,
+    "module": "esnext",
+    "lib": ["ESNext"],
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "typeRoots": ["./node_modules/vite-plugin-use-wasm/dist/types"],
+    "types": ["assemblyscript"],
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "resolveJsonModule": true,
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+    "paths": {
+      "~/*": ["./*"],
+      "@/*": ["./src/*"],
+      "@lib/*": ["./lib/*"]
+    }
+  },
+  "include": [
+    "*.json",
+    "./src/**/*",
+    "./tsdown.config.ts",
+    "./eslint.config.ts"
+  ],
+  "exclude": ["node_modules", "dist"]
+}
