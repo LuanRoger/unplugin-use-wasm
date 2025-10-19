@@ -2,9 +2,9 @@
 
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
+import useWasm from "unplugin-use-wasm/vite";
 import { defineConfig } from "vite";
 import Inspect from "vite-plugin-inspect";
-import useWasm from "unplugin-use-wasm/vite";
 
 export default defineConfig({
   plugins: [

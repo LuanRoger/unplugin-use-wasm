@@ -23,7 +23,7 @@ import { getCompilerFlags } from "./utils/compiler";
 
 export const useWasmBase: UnpluginFactory<PluginOptions | undefined> = (
   options,
-  meta
+  meta,
 ) => {
   const {
     compilerOptions,
@@ -82,23 +82,23 @@ export const useWasmBase: UnpluginFactory<PluginOptions | undefined> = (
       await standaloneEnvironment.setup();
       const outFilePath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        wasmFileName
+        wasmFileName,
       );
       const textFilePath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        wasmTextFileName
+        wasmTextFileName,
       );
       const jsBindingsPath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        jsBindingsFileName
+        jsBindingsFileName,
       );
       const dTsPath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        dTsFileName
+        dTsFileName,
       );
       const sourceMapPath = path.join(
         standaloneEnvironment.standaloneOutputPath,
-        sourceMapFileName
+        sourceMapFileName,
       );
 
       const userDefinedFlags =
@@ -129,7 +129,7 @@ export const useWasmBase: UnpluginFactory<PluginOptions | undefined> = (
         await standaloneEnvironment.clean();
         if (error instanceof Error) {
           throw new Error(
-            `AssemblyScript compilation failed: ${error.message}`
+            `AssemblyScript compilation failed: ${error.message}`,
           );
         }
       }
@@ -160,7 +160,7 @@ export const useWasmBase: UnpluginFactory<PluginOptions | undefined> = (
 
         const devModeBindings = generatedBindings.replace(
           BINDINGS_DEFAULT_WASM_URL_REGEX,
-          `"${wasmDataUrl}"`
+          `"${wasmDataUrl}"`,
         );
 
         try {
@@ -217,7 +217,7 @@ export const useWasmBase: UnpluginFactory<PluginOptions | undefined> = (
           : generatedBindings;
         const resolvedBindings = tsBindings.replace(
           BINDINGS_DEFAULT_WASM_URL_REGEX,
-          `new URL(import.meta.ROLLUP_FILE_URL_${referenceId})`
+          `new URL(import.meta.ROLLUP_FILE_URL_${referenceId})`,
         );
         return {
           code: resolvedBindings,

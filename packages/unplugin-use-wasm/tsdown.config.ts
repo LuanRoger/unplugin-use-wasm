@@ -2,7 +2,7 @@ import { defineConfig } from "tsdown";
 
 export default defineConfig({
   entry: {
-    "index": "src/index.ts",
+    index: "src/index.ts",
     "vite/index": "src/vite.ts",
     "rollup/index": "src/rollup.ts",
     "rolldown/index": "src/rolldown.ts",
