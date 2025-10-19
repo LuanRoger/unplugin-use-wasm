@@ -8,9 +8,9 @@
     "check:write": "biome check --write"
   },
   "devDependencies": {
-    "vite": "^7.1.5",
-    "@biomejs/biome": "2.2.3",
-    "typescript": "^5.9.2"
+    "vite": "^7.1.10",
+    "@biomejs/biome": "2.2.6",
+    "typescript": "^5.9.3"
   },
   "packageManager": "pnpm@10.15.0"
 }
