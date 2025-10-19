@@ -1,0 +1,78 @@
+{
+  "name": "unplugin-use-wasm",
+  "version": "2.0.0",
+  "description": "Support to \"use wasm\" directive to compile to WebAssembly",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LuanRoger/unplugin-use-wasm.git"
+  },
+  "homepage": "https://github.com/LuanRoger/unplugin-use-wasm",
+  "bugs": "https://github.com/LuanRoger/unplugin-use-wasm/issues",
+  "keywords": [
+    "plugin",
+    "vite-plugin",
+    "rollup-plugin",
+    "rolldown-plugin",
+    "unplugin",
+    "webassembly",
+    "wasm",
+    "wast",
+    "emscripten",
+    "assemblyscript",
+    "typescript",
+    "directive"
+  ],
+  "author": "Luan Roger <luan.roger.2003@gmail.com> (https://github.com/LuanRoger)",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs",
+      "default": "./dist/index.cjs"
+    },
+    "./vite": {
+      "types": "./dist/vite/index.d.mts",
+      "import": "./dist/vite/index.mjs",
+      "default": "./dist/vite/index.cjs"
+    },
+    "./rollup": {
+      "types": "./dist/rollup/index.d.mts",
+      "import": "./dist/rollup/index.mjs",
+      "default": "./dist/rollup/index.cjs"
+    },
+    "./rolldown": {
+      "types": "./dist/rolldown/index.d.mts",
+      "import": "./dist/rolldown/index.mjs",
+      "default": "./dist/rolldown/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsdown --config tsdown.config.ts",
+    "publish": "pnpm run build && npm publish --access public"
+  },
+  "peerDependencies": {
+    "vite": ">=7.0.0"
+  },
+  "dependencies": {
+    "assemblyscript": "0.28.9",
+    "fs-extra": "^11.3.2"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "tsdown": "^0.15.8",
+    "unplugin": "^2.3.10",
+    "vite": "^7.1.10"
+  },
+  "packageManager": "pnpm@10.15.0"
+}

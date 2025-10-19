@@ -3,7 +3,8 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import asc from "assemblyscript/asc";
 import { remove } from "fs-extra";
-import type { Plugin } from "vite";
+import type { UnpluginFactory } from "unplugin";
+import { createUnplugin } from "unplugin";
 
 import {
   BINDINGS_DEFAULT_WASM_URL_REGEX,
@@ -20,7 +21,10 @@ import { StandaloneEnvironment } from "./utils";
 import { adaptBindingsForBrowser } from "./utils/browser";
 import { getCompilerFlags } from "./utils/compiler";
 
-export default function useWasm(options?: PluginOptions): Plugin {
+export const useWasmBase: UnpluginFactory<PluginOptions | undefined> = (
+  options,
+  meta,
+) => {
   const {
     compilerOptions,
     browser,
@@ -145,8 +149,10 @@ export default function useWasm(options?: PluginOptions): Plugin {
         remove(tempTsFilePath),
       ]);
 
-      const isViteDev =
-        typeof this.meta?.watchMode !== "undefined" && this.meta.watchMode;
+      const isVite = meta.framework === "vite";
+      const isViteDev = isVite
+        ? process.env.NODE_ENV === "development"
+        : Boolean(meta.watchMode);
 
       if (isViteDev) {
         const wasmBase64 = wasmBinaryContent.toString("base64");
@@ -220,4 +226,8 @@ export default function useWasm(options?: PluginOptions): Plugin {
       }
     },
   };
-}
+};
+
+export const unpluginUseWasm = createUnplugin(useWasmBase);
+
+export default unpluginUseWasm;

@@ -89,7 +89,7 @@ export interface AssemblyScriptOptions {
 }
 
 /**
- * Configuration options for the vite-plugin-use-wasm plugin.
+ * Configuration options for the unplugin-use-wasm plugin.
  * Controls both the AssemblyScript compilation process and the plugin's behavior.
  */
 export interface PluginOptions {

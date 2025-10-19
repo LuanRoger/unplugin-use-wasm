@@ -1,7 +1,12 @@
 import { defineConfig } from "tsdown";
 
 export default defineConfig({
-  entry: "src/index.ts",
+  entry: {
+    index: "src/index.ts",
+    "vite/index": "src/vite.ts",
+    "rollup/index": "src/rollup.ts",
+    "rolldown/index": "src/rolldown.ts",
+  },
   dts: true,
   tsconfig: "tsconfig.json",
   format: "esm",
