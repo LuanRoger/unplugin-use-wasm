@@ -70,9 +70,9 @@
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
-    "tsdown": "^0.15.8",
+    "tsdown": "^0.16.0",
     "unplugin": "^2.3.10",
-    "vite": "^7.1.10"
+    "vite": "^7.1.12"
   },
   "packageManager": "pnpm@10.15.0"
 }
