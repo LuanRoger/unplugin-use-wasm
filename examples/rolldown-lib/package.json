@@ -22,7 +22,7 @@
     "start": "node ./dist/index.js"
   },
   "devDependencies": {
-    "tsdown": "^0.15.7",
+    "tsdown": "^0.16.0",
     "typescript": "^5.9.3",
     "unplugin-use-wasm": "workspace:*"
   }
